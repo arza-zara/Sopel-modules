@@ -1,5 +1,5 @@
 """
-stats.py - Willie Stats URL Module
+stats.py - Willie Stats URL Generator Module
 Replies with a link to the channel's stats page (http://yoursite.com/stats/channel)
 
 Original author: Meicceli
@@ -18,7 +18,7 @@ def stats(bot, trigger):
     if channel == "channel_with_custom_location":
         bot.reply("http://yoursite/obscure_location")
 
-    elif channel == "#no_stats_for this channel":
+    elif channel == "#no_stats_for_this_channel":
         bot.reply("Sorry, no stats for this channel.")
 
     else:
