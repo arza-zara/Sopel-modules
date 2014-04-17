@@ -1,5 +1,12 @@
-#Replies with a link in to the channels stats page (http://yoursite.com/stats/channel
-#See also http://pisg.sourceforge.net/
+"""
+stats.py - Willie Stats URL Module
+Replies with a link in to the channels stats page (http://yoursite.com/stats/channel
+
+Original author: Meicceli
+Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
+
+See also http://pisg.sourceforge.net/
+"""
 from willie.module import commands, example
 
 @commands('stats')

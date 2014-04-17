@@ -1,4 +1,8 @@
-#Simple bmi counter (SI-units)
+"""
+bmi.py - Willie Simple bmi-counter (SI-units) Module
+Original author: Meicceli
+Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
+"""
 from willie.module import commands, example
 
 

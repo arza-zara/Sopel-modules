@@ -1,3 +1,9 @@
+"""
+ask.py - Willie Ask Module
+Original author: Meicceli
+Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
+"""
+
 from willie.module import commands
 from random import choice
 
