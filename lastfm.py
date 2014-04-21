@@ -41,18 +41,21 @@ def lastfm(willie, trigger):
     #json formatted track info
     trackinfo_page = web.get("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&artist=%s&track=%s&username=%s&api_key=1d234424fd93e18d503758bf2714859e&format=json" % (quoted_artist, quoted_track, quoted_user))
     #track playcount and loved stats
-    trackinfo = json.loads(trackinfo_page)['track']
+    trackinfo = json.loads(trackinfo_page)
     try:
-        playcount = trackinfo['userplaycount']
+        playcount = trackinfo['track']['userplaycount']
     except KeyError:
         playcount = "unknown"
-    loved = int(trackinfo['userloved'])
+    loved = int(trackinfo['track']['userloved'])
+    album = '(' + recent_track['album']['#text'] + ') '
+    if len(recent_track['album']['#text']) == 0:
+        album = ''
 
     try:
         if loved > 0:
-            willie.say('\x035' + u'\u2665' +'\x03 %s - %s (%s) (%s plays)' % (recent_track['artist']['#text'], recent_track['name'], recent_track['album']['#text'], playcount))
+            willie.say('\x035' + u'\u2665' +'\x03 %s - %s %s(%s plays)' % (recent_track['artist']['#text'], recent_track['name'], album, playcount))
         else:
-            willie.say('%s - %s (%s) (%s plays)' % (recent_track['artist']['#text'], recent_track['name'], recent_track['album']['#text'], playcount))
+            willie.say('%s - %s %s(%s plays)' % (recent_track['artist']['#text'], recent_track['name'], album, playcount))
     except KeyError:
         willie.say("Couldn't find any recent tracks")
 
@@ -112,6 +115,7 @@ def col2(willie, trigger):
         willie.say('Too many arguments! Input has to be: User Period Size Caption ArtistOnly Playcount')
     else:
         willie.say('http://nsfcd.com/lastfm/collage.php?user=%s&type=7day&size=3x3' % (user))
+
 
 
 @commands('fmset')
