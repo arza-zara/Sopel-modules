@@ -12,6 +12,7 @@ import json
 import sys
 import re
 import pdb
+import urllib
 
 def setup(bot):
     if bot.db and not bot.db.preferences.has_columns('lastfm_user'):
@@ -39,14 +40,14 @@ def lastfm(willie, trigger):
     quoted_artist = web.quote(recent_track['artist']['#text'])
     quoted_track = web.quote(recent_track['name'])
     #json formatted track info
-    trackinfo_page = web.get("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&artist=%s&track=%s&username=%s&api_key=1d234424fd93e18d503758bf2714859e&format=json" % (quoted_artist, quoted_track, quoted_user))
+    trackinfo_page = urllib.urlopen("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&artist=%s&track=%s&username=%s&api_key=1d234424fd93e18d503758bf2714859e&format=json" % (quoted_artist, quoted_track, quoted_user))
     #track playcount and loved stats
-    trackinfo = json.loads(trackinfo_page)
+    trackinfo = json.loads(trackinfo_page.read())['track']
     try:
-        playcount = trackinfo['track']['userplaycount']
+        playcount = trackinfo['userplaycount']
     except KeyError:
         playcount = "unknown"
-    loved = int(trackinfo['track']['userloved'])
+    loved = int(trackinfo['userloved'])
     album = '(' + recent_track['album']['#text'] + ') '
     if len(recent_track['album']['#text']) == 0:
         album = ''
@@ -127,3 +128,4 @@ def update_lastfm_user(bot, trigger):
 
 lastfm.rate = 0
 lastfm.priority = 'low'
+
