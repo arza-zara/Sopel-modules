@@ -16,7 +16,7 @@ def setup(bot):
 
 
 @commands('aq', 'addquote')
-@example(".addquote <Meicceli> embolalia can't code")
+@example(".addquote <Meicceli> embolalia CAN code after all!")
 def quote_add(bot, trigger):
     """Adds a quote to a database"""
 
