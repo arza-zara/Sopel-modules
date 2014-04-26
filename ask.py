@@ -7,8 +7,8 @@ from willie.module import commands
 import random
 
 
-@commands('homopaska')
-def randeoaie(bot, trigger):
+@commands('ask')
+def ans(bot, trigger):
     answers = ['y', 'n']
 
     # Stores the message into the variable
