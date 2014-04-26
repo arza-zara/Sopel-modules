@@ -26,6 +26,7 @@ def ans(bot, trigger):
             # Answers the questions without "or"
             else:
                 answer += random.choice(answers) + " and "
+        # Removes the " and " from the end of the answer variable
         bot.reply(answer[:-5])
         return
 
