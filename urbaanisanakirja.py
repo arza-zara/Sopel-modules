@@ -48,6 +48,6 @@ def urbaani(bot, trigger):
     # Hakee maaritelman, poistaa <p> ja </p> tagit ja korvaa <br/> tagit kauttamerkilla
     definition = str(soup.find_all("p", attrs={'class': None})[qnumero-1])[3:-4].replace("<br/>", " / ")
     # Jos maaritelma on yli 350 merkkia, pilkkoo maaritelmaa
-    if  len(definition) > 350:
+    if len(definition) > 350:
         definition = definition[0:351] + "..."
     bot.say("Määritelmä " + str(qnumero) + "/" + str(total) + ": " +  definition + " (03" + ups + "|05" + dns + ")")
