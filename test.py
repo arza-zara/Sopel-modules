@@ -20,7 +20,7 @@ def yle_tulostus(bot, trigger):
         kategoria = "YLE Tuoreimmat"
     if trigger.bytes.find('yleplue') != -1 or trigger.bytes.find('yplue') != -1:
         url = "https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=12&q=http://yle.fi/uutiset/rss/paauutiset.rss"
-        kategoria = u"YLE Puutiset"
+        kategoria = u"YLE Pääuutiset"
 
     #tallentaa inffot muuttujaan resp
     resp = json.loads(web.get(url))
@@ -60,7 +60,7 @@ def yle_uusimmat(bot, trigger):
         kategoria = "YLE Tuoreimmat"
     if trigger.bytes.find('ylep') != -1:
         url = "https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=12&q=http://yle.fi/uutiset/rss/paauutiset.rss"
-        kategoria = u"YLE Puutiset"
+        kategoria = u"YLE Pääuutiset"
 
     #tallentaa inffot muuttujaan resp
     resp = json.loads(web.get(url))
