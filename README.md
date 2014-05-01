@@ -6,7 +6,7 @@ LGPLv3, except ip.py and lastfm.py (see inside the files for more information).
 Note that the modules "urbaanisanakirja.py" and "fml.py" have a dependency
 "bs4" (BeautifulSoup 4).
 
-Ask.py
+ask.py
 ------
 Answers a question with an answer defined in the module.
 
@@ -16,18 +16,18 @@ You may also ask an "or" question by simply splitting choices with the word
 If you want to, you can ask multiple questions at once. Just split your
 questions with "&&" and the bot will answer each question accordingly.
 
-Bmi.py
+bmi.py
 ------
 Calculates the bmi from given arguments and compares the bmi with
 [this chart](https://en.wikipedia.org/wiki/Body_mass_index#Categories).
 
 Input is `<weight> <height>`(kilograms and metres/centimetres).
 
-Distance.py
+distance.py
 -----------
 Calculates the trip distance and trip duration between two given locations.
 
-Fml.py
+fml.py
 ------
 Gets a random fml from [fmylife.com](http://fmylife.com/random). There are
 problems with fmls that include non-ascii characters but I'm too lazy to try
@@ -47,32 +47,32 @@ This is a modified version of the original ip.py found
 * **Coordinates**
 * **Time Zone**
 
-Lastfm.py
+lastfm.py
 ---------
 This is a modified version of the original lastfm.py found
 [here](https://github.com/mulcare/willie-modules). This version has an
 additional with which you can generate a link to view your
 [lastfm collage](http://tapmusic.net/lastfm/).
 
-Quotes.py
+quotes.py
 ---------
 With this module you can add, delete, get, list, and search quotes. The quotes
 are stored into an SQL database.
 
-Stats.py
+stats.py
 --------
 Outputs a link to the channel's stats' page, if there is one.
 
-Tiny.py
+tiny.py
 -------
 A tinychat module for [tiny.joose.fi]
 
-Urbaanisanakirja.py
+urbaanisanakirja.py
 -------------------
-Gets the definition for a Finnish slang word for [urbaanisanakirja.com]
+Gets the definition for a Finnish slang word for [urbaanisanakirja.com].
 **Requires BeautifulSoup4**
 
-Yle.py
+yle.py
 ------
 Finds the latest news from [yle.fi] and outputs the articles if wanted. I made
 this module just because and it really isn't very convenient for actually
