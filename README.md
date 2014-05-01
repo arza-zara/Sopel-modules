@@ -65,15 +65,16 @@ Outputs a link to the channel's stats' page, if there is one.
 
 tiny.py
 -------
-A tinychat module for [tiny.joose.fi]
+A tinychat module for [tiny.joose.fi](http://tiny.joose.fi)
 
 urbaanisanakirja.py
 -------------------
-Gets the definition for a Finnish slang word for [urbaanisanakirja.com].
+Gets the definition for a Finnish slang word from
+[urbaanisanakirja.com](http://urbaanisanakirja.com).
 **Requires BeautifulSoup4**
 
 yle.py
 ------
-Finds the latest news from [yle.fi] and outputs the articles if wanted. I made
-this module just because and it really isn't very convenient for actually
-checking the news.
+Finds the latest news from [yle.fi](http://yle.fi/uutiset/) and outputs the
+articles if wanted. I made this module just because and it really isn't very
+convenient for actually checking the news.
