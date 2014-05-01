@@ -21,7 +21,11 @@ def quote_add(bot, trigger):
     """Adds a quote to a database"""
 
     # converts the quote to ascii format
-    args = conv(trigger.group(2).encode('utf-8'))
+    try:
+        args = conv(trigger.group(2).encode('utf-8'))
+    except AttributeError:
+        bot.say("No quote given.")
+        return
     orig = ''
 
     # checks if there are any quotes added and if so, stores them into orig
@@ -65,8 +69,12 @@ def get_conv(bot, trigger):
     # if a quote number is given, this fetches the quote associated with the
     # given number.
     if trigger.group(2):
-        number = int(trigger.group(2))
-        output = str(number) + ": " + quote_list[number - 1]
+        try:
+            number = int(trigger.group(2))
+            output = str(number) + ": " + quote_list[number - 1]
+        except ValueError:
+            bot.say(u"Vittuu noi vammaset argumentit :D sen pitää olla numero eikä mikää tekstin pätkä")
+            return
     # if no quote number is given, this picks a quote randomly
     else:
         #(pseudo-)randomly chooses a quote from quote_list
@@ -97,7 +105,7 @@ def quote_del(bot, trigger):
         bot.db.preferences.update(trigger.sender, {'quotes': ""})
         bot.reply("All quotes deleted!")
         return
-    elif del_key.find(":") and trigger.nick.lower() == "meicceli":
+    elif del_key.find(":") != -1 and trigger.nick.lower() == "meicceli":
         uus_lista = "|".join(quote_list[:int(del_key[0]) - 1]) + "|"
         bot.db.preferences.update(trigger.sender, {'quotes': uus_lista})
         bot.reply("Deleted quotes, starting from " + str(int(del_key[0])))
