@@ -29,10 +29,7 @@ Calculates the trip distance and trip duration between two given locations.
 
 fml.py
 ------
-Gets a random fml from [fmylife.com](http://fmylife.com/random). There are
-problems with fmls that include non-ascii characters but I'm too lazy to try
-and fix that myself.
-**Requires BeautifulSoup4**
+Gets a random fml from [fmylife.com](http://fmylife.com).
 
 ip.py
 -----
