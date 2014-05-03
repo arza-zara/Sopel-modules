@@ -10,10 +10,10 @@ ask.py
 Answers a question with an answer defined in the module.
 
 You may also ask an "or" question by simply splitting choices with the word
-"or". The bot will then randomly choose an answer.
+`or`. The bot will then randomly pick a choice.
 
 If you want to, you can ask multiple questions at once. Just split your
-questions with "&&" and the bot will answer each question accordingly.
+questions with `&&` and the bot will answer each question accordingly.
 
 bmi.py
 ------
