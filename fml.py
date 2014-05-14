@@ -6,4 +6,4 @@ Licensed under the GNU Lesser General Public License Version 3 (or greater at yo
 """
 from __future__ import unicode_literals;from willie import web;from willie.module import commands;import xml.etree.ElementTree as ET
 @commands('fml')
-def fmylife(bot, trigger): bot.say(ET.fromstring(web.get('http://api.fmylife.com/view/random?language=en&key=<YOUR_API_KEY>')).find('items/item/text').text)
+def fmylife(bot, trigger): bot.say(ET.fromstring(web.get('http://api.fmylife.com/view/random?language=en&key=53637bae986a8')).find('items/item/text').text)
