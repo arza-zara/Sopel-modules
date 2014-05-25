@@ -30,6 +30,12 @@ fml.py
 ------
 Gets a random fml from [fmylife.com](http://fmylife.com).
 
+ilmatieteenlaitos.py
+--------------------
+A weather module for Finnish cities. Scrapes weather data from
+[ilmatieteenlaitos.fi](http://ilmatieteenlaitos.fi) and gives out accurate
+readings. Requires BeautifulSoup4.
+
 ip.py
 -----
 This is a modified version of the original ip.py found
@@ -54,6 +60,11 @@ quotes.py
 ---------
 With this module you can add, delete, get, list, and search quotes. The quotes
 are stored into an SQL database.
+
+saa.py (OWM weather)
+--------
+This module uses the OWM api to get current weather data. The api is kinda quirky
+and may or may not give correct readings.
 
 stats.py
 --------
