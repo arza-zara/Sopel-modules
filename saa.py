@@ -1,6 +1,6 @@
 # coding=utf8
 """
-weather.py - Willie Open Weather Map Module
+saa.py - Willie Open Weather Map Module
 Original author: Meicceli
 Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
 
