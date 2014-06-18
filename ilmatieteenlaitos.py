@@ -54,7 +54,7 @@ def ilmatieteenlaitos(bot, trigger):
         kellonaika = ""
 
     # Auringonnousu, -lasku ja päivän pituus
-    paivan_pituus = str(soup.find_all("div", attrs={"class": "celestial-status"})[0])
+    paivan_pituus = str(soup.find_all("div", attrs={"class": "celestial-text"})[0]).replace('<div class="celestial-text"> ', '')
 
     # Yrittää hakea havaintoaseman, ja sen löytäessä, lisää havaintoaseman nimen ja kellon ajan outputin alkuun
     try:
