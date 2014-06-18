@@ -24,7 +24,7 @@ def dist(bot, trigger):
 
     # checks if locations are not given
     if not trigger.group(2):
-        bot.reply("'.dist <city1> <city2>' or if there is any whitespace in a city's name then '.dist <city1>|<city2>'")
+        bot.say("'.dist <city1> <city2>' or if there is any whitespace in a city's name then '.dist <city1>|<city2>'")
         return
 
     args = ''
@@ -35,102 +35,92 @@ def dist(bot, trigger):
     else:
         args = trigger.group(2).split(' ')
 
+    if len(args) > 10:
+        bot.say("Too many destinations to route!")
+        return
+
     # <---- STORING ---->
     # Store the locations into variables
 
     # Accepted formats for using walking route
-    pedestrian_route = ['pedestrian', 'walk', 'walking']
+    pedestrian_route = ['pedestrian', 'walk', 'walking', 'kävely', 'kävellen', 'bicycle', 'pyörä', 'pyörällä', 'apostolinkyyti']
 
     # Handles cases with two arguments e.g. "London Paris" or "London|Paris"
-    if len(args) == 2:
-        start = args[0]
-        destination = args[1]
-        method = "fastest"
-    # Handles all the cases with more than two arguments
-    elif len(args) >= 3:
-        # By default, uses quickest drive time route
-        method = "fastest"
-        # Checks if the 3rd argument is in pedestrian_route, if not, default is used (quickest drive time route)
-        if args[2].lower() in pedestrian_route:
-            method = "pedestrian"
-        start = args[0]
-        destination = args[1]
-    else:
-        bot.reply("'.dist <city1> <city2>' or if there is any whitespace in a city's name then '.dist <city1>|<city2>'")
-        return
+    method = "fastest"
+    if args[-1].lower() in pedestrian_route:
+        method = "pedestrian"
+        args = args[:-1]
 
     # <---- ALIASES ---->
-    if start.lower() == "hese":
-        start = "helsinki"
-    if destination.lower() == "hese":
-        destination = "helsinki"
+    for loc in range(len(args)):
+        if args[loc].lower() == "hese": args[loc] = "helsinki"
+        if args[loc].lower() == "perse": args[loc] = "turku"
 
-    if start.lower() == "perse":
-        start = "turku"
-    if destination.lower() == "perse":
-        destination = "turku"
-
-    # <---- RETRIEVES URL DATA ---->
-    # Generates the url where to lookup data.
-    url = api_url + start + '&to=' + destination + "&routeType=" + method
-    resp = json.loads(web.get(url))
-
-    # Checks if given locatios are supported
-    if resp['info']['statuscode'] != 0:
-        error_message = resp['info']['messages'][0]
-        if error_message.find('pedestrian') != -1:
-            bot.reply("Exceeded pedestrian maximum gross distance for locations")
-            return
-        else:
-            bot.reply(error_message)
-            return
+    # <---- LENGTHS & DURATIONS ---->
+    lengths = []
+    durations = []
+    for loc in range(0, len(args)-1):
+        start = args[loc]
+        destination = args[loc+1]
+        url = api_url + start + '&to=' + destination + "&routeType=" + method
+        resp = json.loads(web.get(url))
+        # Checks if given locatios are supported
+        if resp['info']['statuscode'] != 0:
+            error_message = resp['info']['messages'][0]
+            if error_message.find('pedestrian') != -1:
+                bot.say("Exceeded pedestrian maximum gross distance for locations")
+                return
+            else:
+                bot.say(error_message + " (%s, %s)" % (args[loc], args[loc+1]))
+                return
+        lengths.append(resp['distance'][-1])
+        durations.append(resp['time'][-1])
 
     # <---- OUTPUT ---->
     # Stores the data into variables and generates the output
+    # Gets the distance and converts the distance into an appropriate format
+    length = sum(lengths)
+    if 1 > length >= 0:
+        length = str(round(float(length), 2) * 1000) + "m"
+    elif 10 > length >= 1:
+        length = str(round(length, 1)) + "km"
     else:
-        # Gets the distance and converts the distance into an appropriate format
-        length = resp['distance'][-1]
-        if 1 > length >= 0:
-            length = str(round(float(length), 2) * 1000) + "m"
-        elif 10 > length >= 1:
-            length = str(round(length, 1)) + "km"
+        length = str(int(round(length, 0))) + "km"
+
+    # Gets the duration (which unfortunately, is in seconds)
+    duration = sum(durations)
+    days = ""
+    hours = ""
+    minutes = ""
+    # Counts how many days and stores the modulus (hours and minutes) into duration
+    if duration >= 86400:
+        days = int(duration / 86400)
+        duration = duration % 86400
+    # Counts the hours the same way days are counted
+    if duration >= 3600:
+        hours = int(duration / 3600)
+        duration = duration % 3600
+    # Counts the minutes and rounds up if there are 30 or more seconds left
+    # over
+    if duration >= 60:
+        if duration % 60 >= 30:
+            minutes = int(duration / 60) + 1
         else:
-            length = str(int(round(length, 0))) + "km"
+            minutes = int(duration / 60)
 
-        # Gets the duration (which unfortunately, is in seconds)
-        duration = resp['time'][-1]
-        days = ""
-        hours = ""
-        minutes = ""
-        # Counts how many days and stores the modulus (hours and minutes) into duration
-        if duration >= 86400:
-            days = int(duration / 86400)
-            duration = duration % 86400
-        # Counts the hours the same way days are counted
-        if duration >= 3600:
-            hours = int(duration / 3600)
-            duration = duration % 3600
-        # Counts the minutes and rounds up if there are 30 or more seconds left
-        # over
-        if duration >= 60:
-            if duration % 60 >= 30:
-                minutes = int(duration / 60) + 1
-            else:
-                minutes = int(duration / 60)
+    # Generates the duration output
+    duration = ""
+    if days != "":
+        duration += str(days) + "d "
+    if hours != "":
+        duration += str(hours) + "h "
+    if minutes != "":
+        duration += str(minutes) + "min "
+    if duration == "":
+        duration = "Less than half a minute."
 
-        # Generates the duration output
-        duration = ""
-        if days != "":
-            duration += str(days) + "d "
-        if hours != "":
-            duration += str(hours) + "h "
-        if minutes != "":
-            duration += str(minutes) + "min "
-        if duration == "":
-            duration = "Less than half a minute."
-
-        routetype = ""
-        if method == "pedestrian":
-            routetype = "(Walking route)"
-        bot.reply('Distance: ' + length + ', Duration: ' + duration + routetype)
-        return
+    routetype = ""
+    if method == "pedestrian":
+        routetype = "(Walking route)"
+    bot.say('Distance: ' + length + ', Duration: ' + duration + routetype)
+    return
