@@ -80,7 +80,7 @@ def ilmatieteenlaitos(bot, trigger):
         output += "%s %s; " % (nimi, arvo)
 
     # Lisää päivän pituuden yms. outputin perälle ja poistaa turhan paskan lopusta
-    output += paivan_pituus.replace("<strong>", "").replace("</strong>", "").replace('<div class="celestial-status"> ', '').replace(".", ";")[:-8]
+    output += paivan_pituus.replace("<strong>", "").replace("</strong>", "").replace('<div class="celestial-status"> ', '').replace(".", ";", 1)[:-8]
 
     bot.say(output)
 
