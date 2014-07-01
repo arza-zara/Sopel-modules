@@ -26,16 +26,16 @@ def tiny_get(bot, trigger):
     except ValueError:
         bot.reply("No such room!")
         return
-    try:
-        room = resp['room']
-    except KeyError:
-        bot.reply("No such room!")
+    if "error" in resp:
+        bot.reply(resp["error"])
         return
+
+    room = str(resp['room'])
     users = str(resp['users'])
     broads = str(resp['broadcasting'])
-    non_broads = str(resp['users'] - resp['broadcasting'])
     total = str(resp['users'])
     userlist = []
+
     for user in range(0, int(users)):
         info = resp['userlist'][user]
         if info["broadcasting"] == 1:
@@ -43,5 +43,5 @@ def tiny_get(bot, trigger):
         else:
             userlist.append(info["user"])
 
-    output = "Tinychat - " + room + " (" + broads + "/" + total + " broadcasting): " + " ".join(sorted(userlist)) + " " + " - http://tiny.joose.fi/?room=" + room
+    output = "Tinychat - %s (%s/%s broadcasting): %s - http://tiny.joose.fi/?room=%s" % (room, broads, total, " ".join(sorted(userlist)), room)
     bot.say(output)
