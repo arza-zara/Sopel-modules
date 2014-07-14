@@ -66,6 +66,11 @@ saa.py (OWM weather)
 This module uses the OWM api to get current weather data. The api is kinda quirky
 and may or may not give correct readings.
 
+siwa.py
+-------
+Get's the opening and closing time's of a siwa. Also counts the time until it's
+next closing time or opening time.
+
 stats.py
 --------
 Outputs a link to the channel's stats' page, if there is one.
