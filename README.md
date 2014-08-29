@@ -79,6 +79,10 @@ tiny.py
 -------
 A tinychat module for [tiny.joose.fi](http://tiny.joose.fi)
 
+unicafe.py
+----------
+Supports multiple Unicafes in Helsinki. Gets their menus.
+
 urbaanisanakirja.py
 -------------------
 Gets the definition for a Finnish slang word from
