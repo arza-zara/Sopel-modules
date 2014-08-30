@@ -10,12 +10,25 @@ from bs4 import BeautifulSoup
 import datetime
 from dateutil.tz import tzlocal
 
+
 def setup(bot):
     if bot.db and not bot.db.preferences.has_columns('hese_unicafe'):
         bot.db.preferences.add_columns(['hese_unicafe'])
 
-unicafet = {u"metsätalo": "1", u"olivia": "2", u"porthania": "3", u"päärakennus": "4", u"ylioppilasaukio": "8", u"chemicum": "10", u"exactum": "11", u"meilahti": "13", u"ruskeasuo": "14", u"biokeskus": "18", u"viikuna": "21"}
+unicafet = {
+    u"metsätalo": "1",
+    u"olivia": "2",
+    u"porthania": "3",
+    u"päärakennus": "4",
+    u"ylioppilasaukio": "8",
+    u"chemicum": "10",
+    u"exactum": "11",
+    u"meilahti": "13",
+    u"ruskeasuo": "14",
+    u"biokeskus": "18",
+    u"viikuna": "21"}
 paivat = {"ma": "1", "ti": "2", "ke": "3", "to": "4", "pe": "5"}
+
 
 @rate(10)
 @commands('food', 'f')
@@ -37,12 +50,16 @@ def ruoka(bot, trigger):
         # args[0] ruokala
         if len(args) > 1:
             # Jos päivä on annettu numerona niin tää
-            if args[1] in ["1","2","3","4","5"]:
+            if args[1] in ["1", "2", "3", "4", "5"]:
+                if int(day) > int(args[1]):
+                    week = str(int(week) + 1)
                 day = args[1]
             # Jos päivä on postattu kirjaimin niin tsekkaa onko se sallitus
-            # muodos (tsekkaa rivi 13)
+            # muodos (tsekkaa rivi 30)
             else:
                 if args[1] in paivat:
+                    if int(day) > int(paivat[args[1]]):
+                        week = str(int(week) + 1)
                     day = paivat[args[1]]
                 else:
                     bot.say(u"Paska päivä sul. Pitää olla ma ti ke to tai pe")
@@ -54,10 +71,14 @@ def ruoka(bot, trigger):
         # hakee ruokalan sit erikseen SQL databasest (toi "if not (ruokala...)"
         # juttu tos alempan)
         else:
-            if args[0] in ["1","2","3","4","5"]:
+            if args[0] in ["1", "2", "3", "4", "5"]:
+                if int(day) > int(args[0]):
+                    week = str(int(week) + 1)
                 day = args[0]
                 ruokala = ""
             elif args[0] in paivat:
+                if int(day) > int(paivat[args[0]]):
+                    week = str(int(week) + 1)
                 day = paivat[args[0]]
                 ruokala = ""
             else:
@@ -72,10 +93,10 @@ def ruoka(bot, trigger):
             bot.reply("Unicafea: ei ole. Aseta sellane komennol .setunicafe <exactum|chemicum|physicum> tai postaa .f <exactum|chemicum|physicum>")
             return
 
-    #Viikonloppusin postaa ens maanantain setit
+    # Viikonloppusin postaa ens maanantain setit
     if int(day) > 5:
         day = "1"
-        week = str(int(week)+1)
+        week = str(int(week) + 1)
     weekday = ""
     if day == "1":
         weekday = "maanantai: "
@@ -91,22 +112,24 @@ def ruoka(bot, trigger):
     soup = BeautifulSoup(web.get(url))
     output = ""
     tyyppi = ""
-    hinta = ""
     # Hakee safkat soossista
     for food in soup.find_all('li'):
         # Tyyppi meinaa edullisesti, maukkaasti yms.
         try:
-            tyyppi = " (" + food.find_all('span', attrs={'class':'price'})[0].text + ")"
+            tyyppi = " (" + food.find_all('span', attrs={'class': 'price'})[0].text + ")"
         except IndexError:
             tyyppi = ""
         try:
-            tyyppi = " (" + food.find_all('span', attrs={'class':'price_disclosed'})[0].text + ")"
+            tyyppi = " (" + food.find_all('span', attrs={'class': 'price_disclosed'})[0].text + ")"
         except IndexError:
             pass
         # Hommaa safkan nimen ja yhdistää safkan ja tyypin
         output += str(food.contents[0].encode('utf8')) + str(tyyppi.encode('utf8')) + " / "
     # Tää paska hakee nätimman muodon ruokalalle. Esim. jos vedetään .f exactum
     # nii lopulliseen outputtiin tää vetää exactum -> Exactum
+    if output == "":
+        bot.say(u"Menua: ei ole. Syyttäkää Unicafejäbii siit.")
+        return
     for i in unicafet:
         if unicafet[i] == ruokala:
             ruokala = i[0].upper() + i[1:].lower() + ", "
