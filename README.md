@@ -17,14 +17,12 @@ questions with `&&` and the bot will answer each question accordingly.
 
 bmi.py
 ------
-Calculates the bmi from given arguments and compares the bmi with
-[this chart](https://en.wikipedia.org/wiki/Body_mass_index#Categories).
-
-Input is `<weight> <height>`(kilograms and metres/centimetres).
+Calculates your bmi and checks if your bmi is in astral tier or not.
+Output is in Finnish.
 
 distance.py
 -----------
-Calculates the trip distance and trip duration between two given locations.
+Calculates the trip distance and trip duration between up to 10 given locations.
 
 fml.py
 ------
@@ -48,6 +46,9 @@ This is a modified version of the original ip.py found
 * Region
 * **Coordinates**
 * **Time Zone**
+
+You can now also use the .ip command to check users' hostname information with
+.ip <username>, e.g. ".ip Meicceli
 
 lastfm.py
 ---------
@@ -92,5 +93,5 @@ Gets the definition for a Finnish slang word from
 yle.py
 ------
 Finds the latest news from [yle.fi](http://yle.fi/uutiset/) and outputs the
-articles if wanted. I made this module just because and it really isn't very
+articles if wanted. I made this module just for the lols and it really isn't very
 convenient for actually checking the news.
