@@ -5,8 +5,6 @@ Copyright 2011, Dimitri Molenaars, TyRope.nl,
 Copyright © 2013, Elad Alfassa <elad@fedoraproject.org>
 Licensed under the Eiffel Forum License 2.
 
-Modified by Meicceli
-
 http://willie.dftba.net
 """
 
@@ -26,6 +24,7 @@ except ImportError:
 from willie.module import commands, example, event, rule
 from willie.config import Config
 
+channel = ""
 
 def setup(bot):
     if bot.db and not bot.db.preferences.has_columns('ip_addr'):
@@ -41,7 +40,8 @@ def configure(config):
     """
     if config.option('Configure a custom location for the GeoIP db?', False):
         config.add_section('ip')
-        config.interactive_add('ip', 'GeoIP_db_path', 'Full path to the GeoIP database', None)
+        config.interactive_add('ip', 'GeoIP_db_path',
+                               'Full path to the GeoIP database', None)
 
 
 def _decompress(source, target, delete_after_decompression=True):
@@ -64,7 +64,8 @@ def _find_geoip_db(bot):
         if os.path.isfile(cities_db) and os.path.isfile(ipasnum_db):
             return config.ip.GeoIP_db_path
         else:
-            bot.debug(__file__, 'GeoIP path configured but DB not found in configured path', 'warning')
+            bot.debug(
+                __file__, 'GeoIP path configured but DB not found in configured path', 'warning')
     if (os.path.isfile(os.path.join(bot.config.homedir, 'GeoLiteCity.dat')) and
             os.path.isfile(os.path.join(bot.config.homedir, 'GeoIPASNum.dat'))):
         return bot.config.homedir
@@ -76,8 +77,10 @@ def _find_geoip_db(bot):
         bot.say('Downloading GeoIP database, please wait...')
         geolite_city_url = 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz'
         geolite_ASN_url = 'http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz'
-        geolite_city_filepath = os.path.join(bot.config.homedir, 'GeoLiteCity.dat.gz')
-        geolite_ASN_filepath = os.path.join(bot.config.homedir, 'GeoIPASNum.dat.gz')
+        geolite_city_filepath = os.path.join(
+            bot.config.homedir, 'GeoLiteCity.dat.gz')
+        geolite_ASN_filepath = os.path.join(
+            bot.config.homedir, 'GeoIPASNum.dat.gz')
         urlretrieve(geolite_city_url, geolite_city_filepath)
         urlretrieve(geolite_ASN_url, geolite_ASN_filepath)
         _decompress(geolite_city_filepath, geolite_city_filepath[:-3])
@@ -91,27 +94,36 @@ def _find_geoip_db(bot):
 @example('.ip 8.8.8.8')
 def ip(bot, trigger):
     """IP Lookup tool"""
+    global channel
+    channel = trigger.sender
     if not trigger.group(2):
         query = trigger.host
-    if trigger.group(2) in bot.db.preferences:
-        query = bot.db.preferences.get(trigger.group(2), 'ip_addr')
+    if trigger.group(2).lower().find(".") == -1:
+        bot.write(['WHOIS', trigger.group(2)])
+        return
     else:
         query = trigger.group(2)
-    db_path = _find_geoip_db(bot)
-    if db_path is False:
-        bot.debug(__file__, 'Can\'t find (or download) usable GeoIP database', 'always')
-        bot.say('Sorry, I don\'t have a GeoIP database to use for this lookup')
-        return False
-    geolite_city_filepath = os.path.join(_find_geoip_db(bot), 'GeoLiteCity.dat')
-    geolite_ASN_filepath = os.path.join(_find_geoip_db(bot), 'GeoIPASNum.dat')
-    gi_city = pygeoip.GeoIP(geolite_city_filepath)
-    gi_org = pygeoip.GeoIP(geolite_ASN_filepath)
-    host = socket.getfqdn(query)
+    ip_lookup(bot, query)
+
+
+def ip_lookup(bot, query):
     try:
         ipaddr = socket.gethostbyname(query)
     except socket.gaierror:
         bot.reply("Hostname/IP does not exist")
         sys.exit(0)
+    db_path = _find_geoip_db(bot)
+    if db_path is False:
+        bot.debug(__file__,
+                  'Can\'t find (or download) usable GeoIP database', 'always')
+        bot.say('Sorry, I don\'t have a GeoIP database to use for this lookup')
+        return False
+    geolite_city_filepath = os.path.join(
+        _find_geoip_db(bot), 'GeoLiteCity.dat')
+    geolite_ASN_filepath = os.path.join(_find_geoip_db(bot), 'GeoIPASNum.dat')
+    gi_city = pygeoip.GeoIP(geolite_city_filepath)
+    gi_org = pygeoip.GeoIP(geolite_ASN_filepath)
+    host = socket.getfqdn(query)
     response = "[IP/Host Lookup] Hostname: %s | IP: %s" % (host, ipaddr)
 
     isp = gi_org.org_by_name(query)
@@ -119,7 +131,11 @@ def ip(bot, trigger):
         isp = re.sub('^AS\d+ ', '', isp)
     response += " | ISP: %s" % isp
 
-    response += " | Country: %s" % gi_city.country_name_by_name(query)
+    try:
+        response += " | Country: %s" % gi_city.country_name_by_name(query)
+    except AttributeError:
+        bot.reply("Hostname/IP does not exist")
+        sys.exit(0)
 
     city_data = gi_city.record_by_name(query)
     try:
@@ -139,9 +155,11 @@ def ip(bot, trigger):
 
     coordinates_data = gi_city.record_by_name(query)
     try:
-        coordinates = str(coordinates_data['latitude']) + " " + str(coordinates_data['longitude'])
+        coordinates = str(coordinates_data['latitude']) + \
+            " " + str(coordinates_data['longitude'])
     except KeyError:
-        coordinates = coordinates_data['latitude'] + coordinates_data['longitude']
+        coordinates = coordinates_data['latitude'] + \
+            coordinates_data['longitude']
     if coordinates:
         response += " | Coordinates: %s" % coordinates
 
@@ -153,15 +171,20 @@ def ip(bot, trigger):
     if tz:
         response += " | Time Zone: %s" % tz
 
-    bot.say(response)
+    bot.msg(channel, response)
 
 
-@event('JOIN')
+@event('311')
 @rule(r'.*')
-def db_check(bot, trigger):
-    bot.db.preferences.update(trigger.nick, {'ip_addr': trigger.host})
+def whois_host(bot, trigger):
+    host = trigger.args[3]
+    if trigger.args[3].find(".") == -1:
+        bot.msg(channel, "Hostname/IP does not exist")
+        sys.exit(0)
+    ip_lookup(bot, host)
 
-@event('NICK')
+
+@event('401')
 @rule(r'.*')
-def db_check_2(bot, trigger):
-    bot.db.preferences.update(trigger.bytes, {'ip_addr': trigger.host})
+def whois_nohost(bot, trigger):
+    bot.msg(channel, "User not found")
