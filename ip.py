@@ -3,6 +3,7 @@
 ip.py - Willie IP Lookup Module
 Copyright 2011, Dimitri Molenaars, TyRope.nl,
 Copyright © 2013, Elad Alfassa <elad@fedoraproject.org>
+Copyright © 2014, Marcus Leivo <meicceli@willie.mail.kapsi.fi>
 Licensed under the Eiffel Forum License 2.
 
 http://willie.dftba.net
