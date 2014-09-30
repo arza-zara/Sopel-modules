@@ -48,7 +48,7 @@ This is a modified version of the original ip.py found
 * **Time Zone**
 
 You can now also use the .ip command to check users' hostname information with
-.ip <username>, e.g. ".ip Meicceli
+.ip `<username>`, e.g. ".ip Meicceli"
 
 lastfm.py
 ---------
