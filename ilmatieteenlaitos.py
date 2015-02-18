@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 """
 ilmatieteenlaitos.py - Willie Ilmatieteenlaitos Weather Module
-Original author: Meicceli
-Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
+Copyright © 2015, Marcus Leivo
 
-http://willie.dftba.net
+Licensed under the GNU Lesser General Public
+License Version 3 (or greater at your wish).
 """
 from willie.module import commands
 from urllib import quote, urlopen, unquote
 from bs4 import BeautifulSoup
 
+def setup(bot):
+    if bot.db and not bot.db.preferences.has_columns('location'):
+        bot.db.preferences.add_columns(['location'])
 
 @commands('saa', u'sää')
 def ilmatieteenlaitos(bot, trigger):
@@ -18,11 +21,18 @@ def ilmatieteenlaitos(bot, trigger):
     if not (paikkakunta and paikkakunta != ''):
 
         if trigger.nick in bot.db.preferences:
-            paikkakunta = unquote(bot.db.preferences.get(trigger.nick, 'location')).decode("utf8")
+            try:
+                paikkakunta = unquote(bot.db.preferences.get(trigger.nick, 'location').encode("utf8"))
+            except AttributeError:
+                bot.reply("Hnnngh annas ny paikkakunta tai sit aseta default location komennolla .setlocation <paikkakunta>")
+                return
+
 
         if not paikkakunta:
-            bot.reply("Anna paikkakunta tai aseta sellainen komennolla .setlocation <paikkakunta>")
+            bot.reply("Hnnngh annas ny paikkakunta tai sit aseta default location komennolla .setlocation <paikkakunta>")
             return
+    else:
+        paikkakunta = paikkakunta.encode("utf8")
 
     # Aliakset
     if paikkakunta.lower() == "hese":
@@ -31,13 +41,19 @@ def ilmatieteenlaitos(bot, trigger):
         paikkakunta = "turku"
 
     # Kaupungin haku
-    haku = "http://ilmatieteenlaitos.fi/paikallissaa?p_p_id=locationmenuportlet_WAR_fmiwwwweatherportlets&p_p_lifecycle=2&p_p_mode=view&doAsUserLanguageId=fi_FI&place=" + quote(paikkakunta.encode("utf8"))
-    tulokset = urlopen(haku).read().split("\n")
-    if str(tulokset).replace(r"\x00", "") == "['']":
-        bot.say("Paikkakuntaa ei löytynyt")
+    #haku = "http://ilmatieteenlaitos.fi/paikallissaa?p_p_id=locationmenuportlet_WAR_fmiwwwweatherportlets&p_p_lifecycle=2&p_p_mode=view&doAsUserLanguageId=fi_FI&place=" + quote(paikkakunta)
+    haku = "http://ilmatieteenlaitos.fi/saa-ja-meri?p_p_id=locationmenuportlet_WAR_fmiwwwweatherportlets&p_p_lifecycle=2&p_p_mode=view&doAsUserLanguageId=fi_FI&term=" + quote(paikkakunta)
+    tulokset = (urlopen(haku).read())[8:].split('",')[0]
+    if len(tulokset) < 3:
+        bot.say("Paskat paikkakunnat sul :D")
         return
     else:
-        paikkakunta = str(tulokset[0])
+        paikkakunta = str(tulokset)
+        if paikkakunta.find(",") != -1:
+            maaJaCity = paikkakunta.split(", ")
+            maa = maaJaCity[1]
+            city = maaJaCity[0]
+            paikkakunta = maa + "/" + city
 
     # Säätietojen haku
     url = "http://ilmatieteenlaitos.fi/saa/" + quote(paikkakunta.decode("utf8").encode("utf8"))
@@ -49,12 +65,16 @@ def ilmatieteenlaitos(bot, trigger):
     havaintoasema = soup.find_all("option", value=True)
     # Yrittää hakea kellonajan
     try:
-        kellonaika = "(%s) " % (str(soup.find_all("span", attrs={"class": "time-stamp"})[0]).split(" ")[0].split(" ")[2])
+        kellonaika = "(%s) " % (str(soup.find_all("span", attrs={"class": "time-stamp"})[0]).split(" ")[0].split(" ")[2])
+        m
     except IndexError:
         kellonaika = ""
 
     # Auringonnousu, -lasku ja päivän pituus
-    paivan_pituus = str(soup.find_all("div", attrs={"class": "celestial-text"})[0]).replace('<div class="celestial-text"> ', '')
+    try:
+        paivan_pituus = str(soup.find_all("div", attrs={"class": "celestial-text"})[0]).replace('<div class="celestial-text"> ', '')
+    except IndexError:
+        paivan_pituus = ""
 
     # Yrittää hakea havaintoaseman, ja sen löytäessä, lisää havaintoaseman nimen ja kellon ajan outputin alkuun
     try:
@@ -63,7 +83,7 @@ def ilmatieteenlaitos(bot, trigger):
 
         # Ilmatieteenlaiton heittää autom. Kaisaniemeen jos ei löydä urlilla paikkakuntaa.
         if output == "Helsinki Kaisaniemi" and paikkakunta != "Helsinki":
-            bot.say("Paikkakunnalle ei löydy säätietoja")
+            bot.say("Osta uus paikkakunta")
             return
     except IndexError:
         output = ""
@@ -88,13 +108,26 @@ def ilmatieteenlaitos(bot, trigger):
 @commands('setlocation', u'setsää')
 def update_location(bot, trigger):
     paikkakunta = trigger.group(2)
-    haku = "http://ilmatieteenlaitos.fi/paikallissaa?p_p_id=locationmenuportlet_WAR_fmiwwwweatherportlets&p_p_lifecycle=2&p_p_mode=view&doAsUserLanguageId=fi_FI&place=" + quote(paikkakunta.encode("utf8"))
-    tulokset = urlopen(haku).read().split("\n")
-    if str(tulokset).replace(r"\x00", "") == "['']":
-        bot.say("Paikkakuntaa ei löytynyt")
+    if not paikkakunta:
+        bot.say("vitun peelo postaa paikkakunta :D")
+        return
+    # Aliakset
+    if paikkakunta.lower() == "hese":
+        paikkakunta = "helsinki"
+    if paikkakunta.lower() == "perse":
+        paikkakunta = "turku"
+    haku = "http://ilmatieteenlaitos.fi/saa-ja-meri?p_p_id=locationmenuportlet_WAR_fmiwwwweatherportlets&p_p_lifecycle=2&p_p_mode=view&doAsUserLanguageId=fi_FI&term=" + quote(paikkakunta.encode("utf8"))
+    tulokset = (urlopen(haku).read())[8:].split('",')[0]
+    if len(tulokset)<3:
+        bot.say("Paskat paikkakunnat sul :D")
         return
     else:
-        paikkakunta = str(tulokset[0])
+        paikkakunta = str(tulokset)
+        if paikkakunta.find(",") != -1:
+            maaJaCity = paikkakunta.split(", ")
+            maa = maaJaCity[1]
+            city = maaJaCity[0]
+            paikkakunta = city
 
     bot.db.preferences.update(trigger.nick, {'location': str(quote(paikkakunta.decode("utf8").encode("utf8")))})
-    bot.reply('Paikkakuntasi on nyt ' + paikkakunta)
+    bot.reply('Paikkakuntas on nyt ' + paikkakunta)
