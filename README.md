@@ -42,7 +42,7 @@ ilmatieteenlaitos.py
 --------------------
 A weather module for Finnish cities. Scrapes weather data from
 [ilmatieteenlaitos.fi](http://ilmatieteenlaitos.fi) and gives out accurate
-readings. Requires BeautifulSoup4.
+readings. **Requires BeautifulSoup4**
 
 ip.py
 -----
@@ -63,6 +63,7 @@ You can now also use the .ip command to check users' hostname information with
 kuha.py
 -------
 Retrieves random stultifying phrases from [lannistajakuha.com](http://lannistajakuha.com/random)
+**Requires BeautifulSoup4**
 
 lastfm.py
 ---------
@@ -87,6 +88,7 @@ Translates words via [sanakirja.org](http://sanakirja.org/). Syntax is the same 
 is with translate.py, so to translate from English to Swedish, type .sk :en :se valentine.
 If no languages are given, translates from English to Finnish. Also, if only one language
 is given, the word is translated from the given language into Finnish.
+**Requires BeautifulSoup4**
 
 stats.py
 --------
@@ -95,11 +97,12 @@ Outputs a link to the channel's stats' page, if there is one.
 thoreau-quote.py
 ----------------
 Uses the Goodreads' website for retrieving quotes from Henry Thoreau.
-Requires BeautifulSoup4.
+**Requires BeautifulSoup4**
 
 unicafe.py
 ----------
 Supports multiple Unicafes in Helsinki. Gets their menus.
+**Requires BeautifulSoup4**
 
 urbaanisanakirja.py
 -------------------
