@@ -20,9 +20,19 @@ bmi.py
 Calculates your bmi and checks if your bmi is in astral tier or not.
 Output is in Finnish.
 
+book.py
+-------
+Search books from [Goodreads.com](https://www.goodreads.com/) and get information
+about Goodreads-links leading to a book on Goodreads. An API key is needed and can
+be requested [here](https://www.goodreads.com/api/keys).
+
 distance.py
 -----------
 Calculates the trip distance and trip duration between up to 10 given locations.
+
+es.py
+-----
+You'll never understand this one.
 
 fml.py
 ------
@@ -50,6 +60,10 @@ This is a modified version of the original ip.py found
 You can now also use the .ip command to check users' hostname information with
 .ip `<username>`, e.g. ".ip Meicceli"
 
+kuha.py
+-------
+Retrieves random stultifying phrases from [lannistajakuha.com](http://lannistajakuha.com/random)
+
 lastfm.py
 ---------
 This is a modified version of the original lastfm.py found
@@ -67,13 +81,21 @@ saa.py (OWM weather)
 This module uses the OWM api to get current weather data. The api is kinda quirky
 and may or may not give correct readings.
 
+sanakirja-org.py
+----------------
+Translates words via [sanakirja.org](http://sanakirja.org/). Syntax is the same as it
+is with translate.py, so to translate from English to Swedish, type .sk :en :se valentine.
+If no languages are given, translates from English to Finnish. Also, if only one language
+is given, the word is translated from the given language into Finnish.
+
 stats.py
 --------
 Outputs a link to the channel's stats' page, if there is one.
 
-tiny.py
--------
-A tinychat module for [tiny.joose.fi](http://tiny.joose.fi)
+thoreau-quote.py
+----------------
+Uses the Goodreads' website for retrieving quotes from Henry Thoreau.
+Requires BeautifulSoup4.
 
 unicafe.py
 ----------
