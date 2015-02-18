@@ -20,7 +20,7 @@ def th_quote_get():
     quote = (choice(quotes).contents[0].replace('      ', '').replace("  ", " ").encode('utf8') + "-H. D. Thoreau".encode('utf8'))
     return quote
 
-@commands('tests', 'inffo', 'thoreau')
+@commands('inffo', 'thoreau')
 def homopaska(bot, trigger):
     q = th_quote_get()
     while len(q) > 400 or q.decode("utf8").find(u'”') == -1:
