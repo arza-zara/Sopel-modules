@@ -22,7 +22,8 @@ def setup(bot):
     try:
         key = str(bot.config.goodreads.apikey)
     except:
-        raise ConfigurationError('Could not find the Goodreads API key in the config file.')
+        raise ConfigurationError('Could not find the Goodreads \
+                                 API key in the config file.')
     if not bot.memory.contains('url_callbacks'):
         bot.memory['url_callbacks'] = tools.WillieMemory()
     bot.memory['url_callbacks'][regex] = book_by_url
@@ -36,7 +37,8 @@ def configure(config):
     | ----------- | ------- | ------- |
     | apikey | 1b3cfe15768ba29 | Goodreads API key |
     """
-    if config.option('Configure Goodreads? (You will need an api key from https://www.goodreads.com/api/keys)', False):
+    if config.option('Configure Goodreads? (You will need an api key \
+                     from https://www.goodreads.com/api/keys)', False):
         config.interactive_add('goodreads', 'apikey', 'API key')
 
 
@@ -91,7 +93,7 @@ def book_by_url(bot, trigger, found_match=None):
     if authors is not None:
         output += " | "
         allAuthors = authors[0]
-        for allAuthorsor in range(1, len(authors)):
+        for author in range(1, len(authors)):
             if len(allAuthors) > 100:
                 break
             allAuthors += ", " + authors[author]
