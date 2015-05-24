@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 bmi.py - Willie BMI Module
 Original author: Meicceli
 Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
 """
+
 from willie.module import commands, example, rate
 
 
@@ -67,4 +67,4 @@ def bmi(bot, trigger):
             else:
                 bot.reply("vitun sami :D sul kyl viel toivoo ku bmi alle 20 (kahen desimaalin tarkkuudel se on %s). laihduta %s kiloo tai kasva %s senttii nii oot astraalitieris" % (round(fatness, 2), laihdutettava, kasvettava))
         else:
-            bot.reply("EI JUMALAUTA EI HELVETTI BMI %s SAATANAN SAMI JUMALAUTA EI VITTU SULLA ON YLI %s KILOO LAIHDUTETTAVANA TAI %s SENTTII KASVETTAVANA ASTRAALITIERII EI HELVETTI OIKEESTI" % (fatness, laihdutettava, kasvettava))
+            bot.reply("EI JUMALAUTA EI HELVETTI BMI %s SAATANAN SAMI JUMALAUTA EI VITTU SULLA ON YLI %s KILOO LAIHDUTETTAVANA TAI %s SENTTII KASVETTAVANA ASTRAALITIERII EI HELVETTI OIKEESTI" % (round(fatness, 2), laihdutettava, kasvettava))
