@@ -4,6 +4,7 @@ urbaanisanakirja.py - Willie UrbaanisanakirjaModule
 Original author: Meicceli
 Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
 """
+
 from willie.module import commands
 from willie import web
 from bs4 import BeautifulSoup
@@ -46,13 +47,13 @@ def urbaani(bot, trigger):
             for i in link:
                 if i.text.lower() == hakusana.lower():
                     url = i['href']
-                    sana = i.text.encode('utf8') + " >> "
+                    sana = i.text.encode('utf8')
                     count = pituus + 1
             count += 1
         # jos ei löydy 100% samaa ku hakusanaa nii postaa ekan löydön
         if sana == "":
             link = (soup.find_all("table", attrs={'class': "browse-body table table-condensed table-striped"})[0]).find_all("a", href=True)
-            sana = link[0].text.encode("utf8") + " >> "
+            sana = link[0].text.encode("utf8")
             url = link[0]['href']
         soup = BeautifulSoup(web.get("http://urbaanisanakirja.com" + url))
     except IndexError:
@@ -62,7 +63,7 @@ def urbaani(bot, trigger):
     # Tarkistaa, etta annettu numero on sallituissa rajoissa
     total = len(soup.find_all("p", attrs={'class': None}))
     if qnumero > total or qnumero < 0:
-        bot.say("Numero ei vastaa mitään määritelmää.")
+        bot.say("Numero ei vastaa ketään määritelmää.")
         return
 
     # Hakee up ja down votet
@@ -77,5 +78,7 @@ def urbaani(bot, trigger):
     definition = str(soup.find_all("p", attrs={'class': None})[qnumero-1])[3:-4].replace("<br/>", " ")
     # Jos maaritelma on yli 350 merkkia, pilkkoo maaritelmaa
     if len(definition) > 350:
-        definition = definition[0:351] + "..."
-    bot.say(sana + "Määritelmä " + str(qnumero) + "/" + str(total) + ": " +  definition + " (03" + ups + "|05" + dns + ")")
+        definition = definition[0:251]
+        bot.say("%s >> Määritelmä %s/%s: %s (03%s|05%s) >> %s" % (sana, str(qnumero), str(total), definition, ups, dns, "http://urbaanisanakirja.com" + url))
+    else:
+        bot.say("%s >> Määritelmä %s/%s: %s (03%s|05%s)" % (sana, str(qnumero), str(total), definition, ups, dns))
