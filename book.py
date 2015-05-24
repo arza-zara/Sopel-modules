@@ -125,6 +125,9 @@ def book_by_url(bot, trigger, found_match=None):
 def book_by_keywords(bot, trigger):
     """Search a book on Goodreads."""
     key = str(bot.config.goodreads.apikey)
+    if not trigger.group(2):
+        bot.say("Postaas ny joku kirjaki")
+        return
     apifiilu = urlopen("https://www.goodreads.com/search/index.xml?key=" +
                        key + "&q=" + quote(trigger.group(2).encode("utf8")))
     tree = ET.parse(apifiilu)
