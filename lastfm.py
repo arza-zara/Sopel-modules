@@ -6,31 +6,38 @@ Original can be found here https://github.com/mulcare/willie-modules
 Licensing: https://github.com/mulcare/willie-modules/blob/master/LICENSE
 """
 from willie import web
-from willie.config import Config
 from willie.module import commands, example
+from bs4 import BeautifulSoup
 import json
 import sys
-import re
-import pdb
 import urllib
 
-def setup(bot):
-    if bot.db and not bot.db.preferences.has_columns('lastfm_user'):
-        bot.db.preferences.add_columns(['lastfm_user'])
+#Postaa taa luvux 1 jos haluut tulostaa api urlin
+postapiurl = 0
+
+#randomin apikey = 1d234424fd93e18d503758bf2714859e
+#mun apikey      = 782c02b1c96ae181d83850f050509103
 
 @commands('fm', 'np', 'last', 'lastfm')
 def lastfm(willie, trigger):
-    user = trigger.group(2)
+    user = ''
+    if trigger.group(2):
+        user = trigger.group(2).replace("@", trigger.nick)
     if not (user and user != ''):
-        if trigger.nick in willie.db.preferences:
-            user = willie.db.preferences.get(trigger.nick, 'lastfm_user')
+        user = willie.db.get_nick_value(trigger.nick, 'lastfm_user')
         if not user:
             willie.reply("Invalid username given or no username set. Use .fmset to set a username.")
             return
     #username variable prepared for insertion into REST string
+    user = user.lower()
     quoted_user = web.quote(user)
     #json formatted output for recent track
-    recent_page = web.get("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=%s&api_key=1d234424fd93e18d503758bf2714859e&format=json" % (quoted_user))
+    try:
+        recent_page = web.get("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=%s&api_key=782c02b1c96ae181d83850f050509103&format=json" % (quoted_user))
+    except Exception, e:
+        willie.say("last.fm is currently having technical difficulties. See .fmstatus for more information.")
+        return
+
     try:
         recent_track = json.loads(recent_page)['recenttracks']['track'][0]
     except KeyError:
@@ -40,7 +47,9 @@ def lastfm(willie, trigger):
     quoted_artist = web.quote(recent_track['artist']['#text'])
     quoted_track = web.quote(recent_track['name'])
     #json formatted track info
-    trackinfo_page = urllib.urlopen("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&artist=%s&track=%s&username=%s&api_key=1d234424fd93e18d503758bf2714859e&format=json" % (quoted_artist, quoted_track, quoted_user))
+    trackinfo_page = urllib.urlopen("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&artist=%s&track=%s&username=%s&api_key=782c02b1c96ae181d83850f050509103&format=json" % (quoted_artist, quoted_track, quoted_user))
+    if trigger.nick.lower() == "meicceli" and postapiurl == 1:
+       willie.say("http://ws.audioscrobbler.com/2.0/?method=track.getInfo&artist=%s&track=%s&username=%s&api_key=782c02b1c96ae181d83850f050509103&format=json" % (quoted_artist, quoted_track, quoted_user))
     #track playcount and loved stats
     trackinfo = json.loads(trackinfo_page.read())['track']
     try:
@@ -62,12 +71,13 @@ def lastfm(willie, trigger):
 
 
 @commands('col')
+@example('.col neekeri 1month 4x4 true false true')
 def col(willie, trigger):
+    """user, type, size, caption, artistonly, playcount"""
     modes = trigger.group()[5:].split()
     user = trigger.group(2)
     if not (user and user != ''):
-        if trigger.nick in willie.db.preferences:
-            user = willie.db.preferences.get(trigger.nick, 'lastfm_user')
+        user = willie.db.get_nick_value(trigger.nick, 'lastfm_user')
         if not user:
             willie.reply("Invalid username given or no username set. Use .fmset to set a username.")
             return
@@ -95,8 +105,7 @@ def col2(willie, trigger):
     modes = trigger.group()[5:].split()
     user = trigger.group(2)
     if not (user and user != ''):
-        if trigger.nick in willie.db.preferences:
-            user = willie.db.preferences.get(trigger.nick, 'lastfm_user')
+        user = willie.db.get_nick_value(trigger.nick, 'lastfm_user')
         if not user:
             willie.reply("Invalid username given or no username set. Use .fmset to set a username.")
             return
@@ -122,10 +131,30 @@ def col2(willie, trigger):
 @commands('fmset')
 @example('.fmset daftpunk69')
 def update_lastfm_user(bot, trigger):
+    if not trigger.group(2):
+        bot.reply("homo")
+        return
     user = trigger.group(2)
-    bot.db.preferences.update(trigger.nick, {'lastfm_user': user})
+    bot.db.set_nick_value(trigger.nick, 'lastfm_user', user)
     bot.reply('Thanks, ' + user)
+
+@commands('fmstatus', 'npstatus')
+def fmstatusget(bot, trigger):
+    bot.say(get_lastfm_status())
+
+def get_lastfm_status():
+    url = "http://status.last.fm/"
+    soup = BeautifulSoup(web.get(url))
+    output = ""
+    statukset = soup.find_all('td', attrs={"class": "statussvc"})
+    tilat = soup.find_all('span', attrs={"class": True})
+    output = ""
+    for i in range(len(statukset)):
+        name = statukset[i].text
+        status = tilat[i].text[2:]
+        output += name + " " + status + "; "
+    return(output[:-2])
+
 
 lastfm.rate = 0
 lastfm.priority = 'low'
-
