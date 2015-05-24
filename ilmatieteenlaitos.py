@@ -1,31 +1,27 @@
 # -*- coding: utf-8 -*-
 """
 ilmatieteenlaitos.py - Willie Ilmatieteenlaitos Weather Module
-Copyright © 2015, Marcus Leivo
+Original author: Meicceli
+Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
 
-Licensed under the GNU Lesser General Public
-License Version 3 (or greater at your wish).
+http://willie.dftba.net
 """
 from willie.module import commands
 from urllib import quote, urlopen, unquote
 from bs4 import BeautifulSoup
 
-def setup(bot):
-    if bot.db and not bot.db.preferences.has_columns('location'):
-        bot.db.preferences.add_columns(['location'])
 
 @commands('saa', u'sää')
 def ilmatieteenlaitos(bot, trigger):
     paikkakunta = trigger.group(2)
     # Tarkastaa onko nimimerkki asettanut itselleen paikkakuntaa .setlocationilla
     if not (paikkakunta and paikkakunta != ''):
-
-        if trigger.nick in bot.db.preferences:
-            try:
-                paikkakunta = unquote(bot.db.preferences.get(trigger.nick, 'location').encode("utf8"))
-            except AttributeError:
-                bot.reply("Hnnngh annas ny paikkakunta tai sit aseta default location komennolla .setlocation <paikkakunta>")
-                return
+        paikkakunta = bot.db.get_nick_value(trigger.nick, 'location')
+        if not paikkakunta:
+            bot.reply("Hnnngh annas ny paikkakunta tai sit aseta default location komennolla .setlocation <paikkakunta>")
+            return
+        else:
+            paikkakunta = unquote(paikkakunta.encode("utf8"))
 
 
         if not paikkakunta:
@@ -39,9 +35,10 @@ def ilmatieteenlaitos(bot, trigger):
         paikkakunta = "helsinki"
     if paikkakunta.lower() == "perse":
         paikkakunta = "turku"
+    if paikkakunta.lower() == "ptown":
+        paikkakunta = "porvoo"
 
     # Kaupungin haku
-    #haku = "http://ilmatieteenlaitos.fi/paikallissaa?p_p_id=locationmenuportlet_WAR_fmiwwwweatherportlets&p_p_lifecycle=2&p_p_mode=view&doAsUserLanguageId=fi_FI&place=" + quote(paikkakunta)
     haku = "http://ilmatieteenlaitos.fi/saa-ja-meri?p_p_id=locationmenuportlet_WAR_fmiwwwweatherportlets&p_p_lifecycle=2&p_p_mode=view&doAsUserLanguageId=fi_FI&term=" + quote(paikkakunta)
     tulokset = (urlopen(haku).read())[8:].split('",')[0]
     if len(tulokset) < 3:
@@ -116,6 +113,8 @@ def update_location(bot, trigger):
         paikkakunta = "helsinki"
     if paikkakunta.lower() == "perse":
         paikkakunta = "turku"
+    if paikkakunta.lower() == "ptown":
+        paikkakunta = "porvoo"
     haku = "http://ilmatieteenlaitos.fi/saa-ja-meri?p_p_id=locationmenuportlet_WAR_fmiwwwweatherportlets&p_p_lifecycle=2&p_p_mode=view&doAsUserLanguageId=fi_FI&term=" + quote(paikkakunta.encode("utf8"))
     tulokset = (urlopen(haku).read())[8:].split('",')[0]
     if len(tulokset)<3:
@@ -129,5 +128,5 @@ def update_location(bot, trigger):
             city = maaJaCity[0]
             paikkakunta = city
 
-    bot.db.preferences.update(trigger.nick, {'location': str(quote(paikkakunta.decode("utf8").encode("utf8")))})
+    bot.db.set_nick_value(trigger.nick, 'location', str(quote(paikkakunta.decode("utf8").encode("utf8"))))
     bot.reply('Paikkakuntas on nyt ' + paikkakunta)
