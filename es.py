@@ -6,7 +6,7 @@ Copyright © 2015, Marcus Leivo
 Licensed under the GNU Lesser General Public
 License Version 3 (or greater at your wish).
 """
-from willie.tools import Nick
+from willie.tools import Identifier
 from willie.module import commands, example
 from willie.formatting import color, colors
 from operator import itemgetter
@@ -54,7 +54,7 @@ class ES:
 
 def onkoEs(es):
     if es.find(".") != -1:
-        args = es.split(".")
+        args = es.upper().split(".")
     else:
         return False
     if len(args) < 2:
@@ -63,7 +63,7 @@ def onkoEs(es):
     tokaLuku = args[1]
 
     ekaSallitut = ["1", "2", "3", "4"]
-    tokaSallitut = ["1", "2", "3", "4", "5", "6",
+    tokaSallitut = ["0", "1", "2", "3", "4", "5", "6",
                     "7", "8", "9", "A", "B", "C", "D", "E"]
 
     if (ekaLuku in ekaSallitut) and (tokaLuku in tokaSallitut):
@@ -115,11 +115,11 @@ def addes(bot, trigger):
     f = open(db_fiilu, 'r+')
     resp = json.load(f)
     # fixaa homon "bugin"
-    resp = {Nick(key): value for key, value in resp.iteritems()}
+    resp = {Identifier(key): value for key, value in resp.iteritems()}
 
     # tsekkaa onko input sallitussa muodossa
     args = trigger.group(2).split(" ")
-    es = args[0]
+    es = args[0].upper()
     arvosana = args[1].replace("/5", "")
     if not isFloat(arvosana) or (not (onkoEs(es) and onkoArvosana(arvosana))):
         bot.say("inputin pitää olla muotoo es ja sit"
@@ -151,7 +151,7 @@ def deles(bot, trigger):
     db_fiilu = str(bot.config.es.dbfiilu)
     f = open(db_fiilu, 'r+')
     resp = json.load(f)
-    resp = {Nick(key): value for key, value in resp.iteritems()}
+    resp = {Identifier(key): value for key, value in resp.iteritems()}
 
     args = trigger.group(2).split(" ")
     es = args[0]
@@ -189,7 +189,7 @@ def getes(bot, trigger):
     db_fiilu = str(bot.config.es.dbfiilu)
     f = open(db_fiilu, 'r')
     resp = json.load(f)
-    resp = {Nick(key): value for key, value in resp.iteritems()}
+    resp = {Identifier(key): value for key, value in resp.iteritems()}
 
     kayttajat = luoESkayttajat(resp)
     esOliot = luoESoliot(resp)
@@ -219,7 +219,7 @@ def getes(bot, trigger):
     if nikki in resp:
         # Nimimerkin lisäksi muita argumentteja
         if len(args) > 1:
-            es = args[1]
+            es = args[1].upper()
             # toinen argumentti topX
             if es[:3] == "top" and isInt(es.split("top")[-1]):
                 bot.say(userTopES(kayttajat, nikki, int(es.split("top")[-1])))
@@ -241,7 +241,7 @@ def getes(bot, trigger):
 
     # Argumenttina pelkkä ES
     if onkoEs(args[0]):
-        es = args[0]
+        es = args[0].upper()
         if len(args) > 1 and (args[1].lower() == "all" or args[1].lower() == "kaikki"):
             for olio in esOliot:
                 if es == olio.merkki:
