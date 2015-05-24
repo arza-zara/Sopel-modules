@@ -21,11 +21,14 @@ maatunnus = {"bg": "1", "ee": "2", "en": "3", "es": "4",
 
 
 @rate(10)
-@commands("sk", "sanakirja", "sana")
+@commands("sk", "sanakirja", u"käännä")
 @example(u".sk :ee :fi Krikin kaja pöhö")
 def sanakirja(bot, trigger):
     """Maatunnukset: bg, cz, de, dk, ee, el, en, ep, es, fi, fr, hu, it, jp, \
         lat, lt, lv, nl, no, pl, pt, ru, se, tr"""
+    if not trigger.group(2):
+        bot.say(u"Yritäs ny.")
+        return
     command = trigger.group(2)
 
     def langcode(p):
