@@ -5,6 +5,10 @@ My willie IRC BOT modules. All modules are created by me and licensed under GNU
 LGPLv3, except ip.py and lastfm.py (see inside the files for more information).
 Note that some modules require "bs4" (BeautifulSoup 4).
 
+almanakka.py
+------------
+Outputs whose name day it is and which occasion takes place today if any.
+
 ask.py
 ------
 Answers a question with an answer defined in the module.
@@ -37,6 +41,10 @@ You'll never understand this one.
 fml.py
 ------
 Gets a random fml from [fmylife.com](http://fmylife.com).
+
+getstrike.py
+------------
+Find torrents from [getstrke.net](https://getstrike.net)
 
 ilmatieteenlaitos.py
 --------------------
@@ -72,15 +80,16 @@ This is a modified version of the original lastfm.py found
 additional with which you can generate a link to view your
 [lastfm collage](http://tapmusic.net/lastfm/).
 
-quotes.py
----------
-With this module you can add, delete, get, list, and search quotes. The quotes
-are stored into an SQL database.
+Update: Now also includes a new command, '.fmstatus', which fetches last.fm's current status via [status.last.fm](http://status.last.fm/)
 
-saa.py (OWM weather)
---------
-This module uses the OWM api to get current weather data. The api is kinda quirky
-and may or may not give correct readings.
+oraakkeli.py
+------------
+Answers questions with the command '.oraakkeli', or by calling your bot eg.
+"Willie, how are you?". Gets the answers from [lintukoto.net](http://www.lintukoto.net/viihde/oraakkeli/index.php).
+
+s-ryhma.py
+----------
+Find the opening hours of any Alepa, Prisma, Sale or S-market. Use '.sryhmä' to search any of the stores, or '.alepa' to search only Alepas.
 
 sanakirja-org.py
 ----------------
@@ -90,14 +99,13 @@ If no languages are given, translates from English to Finnish. Also, if only one
 is given, the word is translated from the given language into Finnish.
 **Requires BeautifulSoup4**
 
-stats.py
---------
-Outputs a link to the channel's stats' page, if there is one.
+siwa.py
+-------
+Find the opening hours of any Siwa or Valintatalo.
 
-thoreau-quote.py
-----------------
-Uses the Goodreads' website for retrieving quotes from Henry Thoreau.
-**Requires BeautifulSoup4**
+suomisanakirja.py
+-----------------
+Finds definitions for Finnish words.
 
 unicafe.py
 ----------
@@ -110,8 +118,6 @@ Gets the definition for a Finnish slang word from
 [urbaanisanakirja.com](http://urbaanisanakirja.com).
 **Requires BeautifulSoup4**
 
-yle.py
-------
-Finds the latest news from [yle.fi](http://yle.fi/uutiset/) and outputs the
-articles if wanted. I made this module just for the lols and it really isn't very
-convenient for actually checking the news.
+vimeo.py
+--------
+Find information on any Vimeo-link.
