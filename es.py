@@ -1,14 +1,14 @@
-# coding: utf8
 """
-es.py - Willie Euro Shopper Energy Drink DB Module
-Copyright © 2015, Marcus Leivo
+es.py - Sopel Euro Shopper Energy Drink DB Module
+Copyright 2015, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
 
-Licensed under the GNU Lesser General Public
-License Version 3 (or greater at your wish).
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
-from willie.tools import Identifier
-from willie.module import commands, example
-from willie.formatting import color, colors
+from sopel.tools import Identifier
+from sopel.module import commands, example
+from sopel.formatting import color, colors
 from operator import itemgetter
 from random import randint
 import json
@@ -102,13 +102,13 @@ def isFloat(luku):
 def addes(bot, trigger):
     if not trigger.group(2):
         bot.say("yritä edes")
-    if (trigger.sender != "#neekeri"
-            and trigger.sender != "#intellektuelli"
-            and trigger.nick.lower()[:5] != "tuoli"
-            and trigger.nick.lower() != "meicceli"):
-        bot.say("Täl kannul vaan tuolil ja" +
-                " meiccelil on oikeudet arvostella ES")
-        return
+#    if (trigger.sender != "#neekeri"
+#            and trigger.sender != "#intellektuelli"
+#            and (trigger.nick.lower()[:5] != "tuoli"
+#            or trigger.nick.lower() != "meicceli")):
+#        bot.say("Täl kannul vaan tuolil ja" +
+#                " meiccelil on oikeudet arvostella ES")
+#        return
     db_fiilu = str(bot.config.es.dbfiilu)
 
     # avaa ja lataa json fiilun
@@ -245,14 +245,14 @@ def getes(bot, trigger):
         if len(args) > 1 and (args[1].lower() == "all" or args[1].lower() == "kaikki"):
             for olio in esOliot:
                 if es == olio.merkki:
-                    esOlio = unicode(olio)
+                    esOlio = str(olio)
                     arvosanalista = sorted(olio.arvosanalista)[::-1]
                     bot.say("%s (arvosanat: %s)" % (esOlio, str(arvosanalista)[1:-1]))
                     return
         else:
             for olio in esOliot:
                 if es == olio.merkki:
-                    esOlio = unicode(olio)
+                    esOlio = str(olio)
                     arvioita = olio.arvioita
                     arvostelijoita = olio.arvostelijoita
                     bot.say("%s (arvostelijoita %s, arvosteltu %s kertaa)"

@@ -15,7 +15,7 @@ from datetime import datetime
 import xml.etree.ElementTree as ET
 
 
-api_key = "cc43535a-77ab-40ba-8196-4a31f80b2488"
+api_key = "<your key here"
 api_url = "http://data.fmi.fi/fmi-apikey/" + api_key + "/wfs?request=getFeature&storedquery_id=fmi::observations::weather::multipointcoverage&parameters=t2m,rh,td,wd_10min,ws_10min,wg_10min,r_1h,pressure,snow_aws,n_man,vis&place="
 
 
@@ -83,7 +83,7 @@ def genFmiOutput(station, time, info):
         observations["1Kosteus"] = (str(int(round(float(observations["1Kosteus"][0])))), observations["1Kosteus"][1])
 
     for i in sorted(observations.keys()):
-        if observations[i][0] == "NaN":
+        if observations[i][0] == "NaN" or len(observations[i][0]) <= 0:
             observations.pop(i)
         else:
             if i[0] in ["0", "1", "2", "5", "6", "7", "8"]:

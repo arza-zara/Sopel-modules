@@ -1,18 +1,20 @@
-#-*- coding: utf-8 -*-
 """
 distance.py - Willie Trip Distance & Duration Module
-Original author: Meicceli
-Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
+Copyright 2015, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
+
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
-from __future__ import unicode_literals
 import json
 
-from willie import web
-from willie.module import commands, example
+from sopel import web
+from urllib.request import urlopen, quote
+from sopel.module import commands, example
 
 
 # API URL
-api_url = 'http://open.mapquestapi.com/directions/v2/routematrix?key=Fmjtd|luur2q08nh%2Cb5%3Do5-9ab20u&unit=k&from='
+api_url = 'http://open.mapquestapi.com/directions/v2/routematrix?key=Fmjtd%7Cluu82l6and%2C75%3Do5-94r0u6&unit=k&from='
 
 
 @commands('matka', 'dist')
@@ -31,7 +33,7 @@ def dist(bot, trigger):
     # Splits the locations into args. (Los Angeles|Seattle -> ['Los Angeles', 'Seattle'])
     # if no '|' is found then uses spaces to split (Los Angeles Seattle -> ['Los', 'Angeles', 'Seattle'])
     if trigger.group(2).find('|') != -1:
-        args = trigger.group(2).split('|')
+        args = trigger.group(2).replace(" | ", "|").split('|')
     else:
         args = trigger.group(2).split(' ')
 
@@ -55,6 +57,7 @@ def dist(bot, trigger):
     for loc in range(len(args)):
         if args[loc].lower() == "hese": args[loc] = "helsinki"
         if args[loc].lower() == "perse": args[loc] = "turku"
+        if args[loc].lower() == "ptown": args[loc] = "porvoo"
 
     # <---- LENGTHS & DURATIONS ---->
     lengths = []
@@ -62,8 +65,8 @@ def dist(bot, trigger):
     for loc in range(0, len(args)-1):
         start = args[loc]
         destination = args[loc+1]
-        url = api_url + start + '&to=' + destination + "&routeType=" + method
-        resp = json.loads(web.get(url))
+        url = api_url + quote(start) + '&to=' + quote(destination) + "&routeType=" + quote(method)
+        resp = json.loads(urlopen(url).read().decode())
         # Checks if given locatios are supported
         if resp['info']['statuscode'] != 0:
             error_message = resp['info']['messages'][0]

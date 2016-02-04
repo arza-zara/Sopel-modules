@@ -1,16 +1,17 @@
-# coding: utf8
 """
-book.py - Willie Goodreads Module
-Copyright © 2015, Marcus Leivo
+book.py - Sopel Goodreads Module
+Copyright 2015, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
 
-Licensed under the GNU Lesser General Public
-License Version 3 (or greater at your wish).
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
 from __future__ import unicode_literals
-from willie import tools
-from willie.config import ConfigurationError
-from willie.module import commands, rule, example
-from urllib import quote, urlopen
+from sopel import tools
+from sopel.config import ConfigurationError
+from sopel.module import commands, rule, example
+from urllib.parse import quote
+from urllib.request import urlopen
 import re
 import xml.etree.ElementTree as ET
 
@@ -22,10 +23,9 @@ def setup(bot):
     try:
         key = str(bot.config.goodreads.apikey)
     except:
-        raise ConfigurationError('Could not find the Goodreads \
-                                 API key in the config file.')
+        raise ConfigurationError('Could not find the Goodreads API key in the config file.')
     if not bot.memory.contains('url_callbacks'):
-        bot.memory['url_callbacks'] = tools.WillieMemory()
+        bot.memory['url_callbacks'] = tools.SopelMemory()
     bot.memory['url_callbacks'][regex] = book_by_url
 
 
@@ -82,7 +82,6 @@ def book_by_url(bot, trigger, found_match=None):
     title = infot['title']
     authors = infot['authors']
     year = infot['pubyear']
-    ratingscount = infot['ratingscount']
     rating = infot['avgrating']
     pages = infot['pages']
 
@@ -110,9 +109,6 @@ def book_by_url(bot, trigger, found_match=None):
         output += " | "
         output += "Rating: " + rating
 
-        if ratingscount is not None:
-            output += " (%s ratings)" % (ratingscount)
-
     if pages is not None:
         output += " | "
         output += "Pages: " + pages
@@ -129,7 +125,7 @@ def book_by_keywords(bot, trigger):
         bot.say("Postaas ny joku kirjaki")
         return
     apifiilu = urlopen("https://www.goodreads.com/search/index.xml?key=" +
-                       key + "&q=" + quote(trigger.group(2).encode("utf8")))
+                       key + "&q=" + quote(trigger.group(2)))
     tree = ET.parse(apifiilu)
     root = tree.getroot()
     try:
@@ -144,7 +140,6 @@ def book_by_keywords(bot, trigger):
     year = eka[4].text
 
     rating = eka[7].text
-    ratingscount = eka[5].text
 
     output = "[Goodreads Search] "
     if title is not None:
@@ -158,7 +153,5 @@ def book_by_keywords(bot, trigger):
     if rating is not None:
         output += " | "
         output += "Rating: " + rating
-        if ratingscount is not None:
-            output += " (%s ratings)" % (ratingscount)
     output += " | Link: https://goodreads.com/book/show/" + book_id
     bot.say(output)

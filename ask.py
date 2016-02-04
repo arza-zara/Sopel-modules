@@ -1,47 +1,49 @@
 """
-ask.py - Willie Ask Module
-Original author: Meicceli
-Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
+ask.py - Sopel Ask Module
+Copyright 2014, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
+
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
-from willie.module import commands
-import random
+from sopel.module import commands
+from random import choice
 
 
-@commands('ask')
-def ans(bot, trigger):
-    answers = ['y', 'n']
+@commands('ask', 'kysy')
+def rand(bot, trigger):
+    vastaukset = ['j xD', 'e xD']
 
-    # Stores the message into the variable
-    message = trigger.group(2)
+    # Tallentaa viestin ilman annettua komentoa muuttujaan postaus
+    if not trigger.group(2):
+        bot.say("Vitun neekeri postaas ny joku kysymys :D")
+        return
+    postaus = trigger.group(2)
 
-    # Checks if the message has both "or" and "&&" in it
-    if message.find(' or ') != -1 and message.find(' && ') != -1:
-        answer = ""
-        # Splits the questions and iterates through them
-        for i in message.split(' && '):
-            # Answers the "or" questions and appends the answer into
-            if i.find(' or ') != -1:
-                choices = i.split(' or ')
-                answer += random.choice(choices) + " of course! and "
-            # Answers the questions without "or"
+    if postaus.find(' vai ') != -1 and postaus.find(' && ') != -1:
+        vastaus = ""
+        for i in postaus.split(' && '):
+            vaihtoehdot = []
+            if i.find(' vai ') != -1:
+                vaihtoehdot = i.split(' vai ')
+                vastaus += choice(vaihtoehdot) + " tietty ja "
             else:
-                answer += random.choice(answers) + " and "
-        # Removes the " and " from the end of the answer variable
-        bot.reply(answer[:-5])
+                vastaus += choice(vastaukset) + " ja "
+        bot.reply(vastaus[:-4])
         return
 
-    # Checks if there is only "or"-questions in the message
-    elif message.find(' or ') != -1:
-        choices = message.split(' or ')
-        bot.reply(random.choice(choices) + " of course!")
+    # Tarkistaa esiintyyko viestissa sana "vai"
+    elif postaus.find(' vai ') != -1:
+        # Leikkaa vastausvaihtoehdot listaan
+        vaihtoehdot = postaus.split(' vai ')
+        bot.reply(choice(vaihtoehdot) + " tietenki :D")
 
-    # Checks if there are multiple questions without "or"
-    elif message.find(' && ') != -1:
-        choices = message.split(' && ')
+    elif postaus.find(' && ') != -1:
+        vaihtoehdot = postaus.split(' && ')
         output = ""
-        for i in choices:
-            output += random.choice(answers) + " and "
-        bot.reply(output[:-5])
+        for i in vaihtoehdot:
+            output += choice(vastaukset) + " ja "
+        bot.reply(output[:-4])
 
     else:
-        bot.reply(random.choice(answers))
+        bot.reply(choice(vastaukset))

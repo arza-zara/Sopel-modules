@@ -1,21 +1,17 @@
-# -*- encoding:utf8 -*-
 """
 unicafe.py - Willie Unicafe Module
-Copyright © 2015, Marcus Leivo
+Copyright 2015, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
 
-Licensed under the GNU Lesser General Public
-License Version 3 (or greater at your wish).
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
-from willie.module import commands, example, rate
-from willie import web
+from sopel.module import commands, example, rate
+from sopel import web
 import feedparser
 import datetime
 from dateutil.tz import tzlocal
 
-
-def setup(bot):
-    if bot.db and not bot.db.preferences.has_columns('hese_unicafe'):
-        bot.db.preferences.add_columns(['hese_unicafe'])
 
 unicafet = {
     u"metsätalo": "1",
@@ -54,7 +50,7 @@ paivat = {"ma": "1", "ti": "2", "ke": "3", "to": "4", "pe": "5"}
 
 tuetut = []
 for i in unicafet:
-    tuetut.append(i[:1].encode("utf8").upper() + i[1:].encode("utf8") + ", ")
+    tuetut.append(i[:1].upper() + i[1:] + ", ")
 tuetut.sort()
 tuetut = "".join(tuetut)[:-2]
 
@@ -67,7 +63,7 @@ def ruoka(bot, trigger):
     day = str(now.weekday() % 7)
     hour = datetime.datetime.today().hour
     if hour >= 16:
-        day = str(int(day) % 7)
+        day = str((int(day)+1) % 7)
 
     ruokala = ''
     # Jos annettu argumenttei (.f <jotain>) nii tää tulkitsee annettui termei
@@ -107,8 +103,7 @@ def ruoka(bot, trigger):
     # Tää paska suorittuu silloin ku ruokalaa ei oo annettu ja kattoo onko sql
     # databaseen tallennettu ruokalaa
     if not (ruokala and ruokala != ''):
-        if trigger.nick in bot.db.preferences:
-            ruokala = bot.db.preferences.get(trigger.nick, 'hese_unicafe')
+        ruokala = bot.db.get_nick_value(trigger.nick, 'hese_unicafe')
         if not ruokala:
             bot.reply("Unicafea: ei ole. Aseta sellane komennol " +
                       ".setunicafe <ravintola> " +
@@ -121,7 +116,7 @@ def ruoka(bot, trigger):
     except IndexError:
         bot.say("Ne ankat on menny taas failaa jotai enkä saa fetchattuu menuu")
         return
-    safkat = str(feed["entries"][int(day)]['summary_detail']['value'].encode("utf8"))
+    safkat = str(feed["entries"][int(day)]['summary_detail']['value'])
     if len(safkat) == 0:
         bot.say("Viikonloppusafkaa: ei ole")
         return
@@ -143,7 +138,7 @@ def update_hese_unicafe(bot, trigger):
         bot.say("Paskat Unicafet sul. Nää Unicafet on tuettui: " + tuetut)
         return
     # rid on ruokalan urlin numero
-    rid = str(unicafet[ruokala]).encode("utf8")
+    rid = str(unicafet[ruokala])
     # tallentaa rid:n SQL databaseen
-    bot.db.preferences.update(trigger.nick, {'hese_unicafe': rid})
+    bot.db.set_nick_value(trigger.nick, 'hese_unicafe', rid)
     bot.reply('Sun Unicafe on nyt ' + ruokala[0].upper() + ruokala[1:].lower())

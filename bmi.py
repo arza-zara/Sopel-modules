@@ -1,10 +1,13 @@
 """
-bmi.py - Willie BMI Module
-Original author: Meicceli
-Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
+bmi.py - Sopel BMI Module
+Copyright 2015, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
+
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
 
-from willie.module import commands, example, rate
+from sopel.module import commands, example, rate
 
 
 #@rate(60)

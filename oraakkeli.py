@@ -1,13 +1,15 @@
-# coding=utf8
 """
-ask.py - Willie Oraakkeli Module
-Original author: Meicceli
-Licensed under the GNU Lesser General Public License Version 3 (or greater at your wish).
+oraakkeli.py - Sopel Lintukoto - Oraakkeli Module
+Copyright 2015, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
+
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
 
-from willie.module import commands, nickname_commands
+from sopel.module import commands, nickname_commands
+from sopel import web
 import requests
-
 
 @commands('oraakkeli')
 @nickname_commands(r".*")

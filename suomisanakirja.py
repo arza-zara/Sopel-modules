@@ -1,19 +1,21 @@
 #coding: utf8
 """
 suomisanakirja.py - Willie Suomisanakirja Module
-Copyright © 2015, Marcus Leivo
+Copyright 2015, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
 
-Licensed under the GNU Lesser General Public
-License Version 3 (or greater at your wish).
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
-from willie.module import commands, example
+from sopel.module import commands, example
 from bs4 import BeautifulSoup
-from urllib import quote, urlopen
+from urllib.request import urlopen
+from urllib.parse import quote
 import json
 
 
 def maaritelmaSivulta(maarNro, url):
-    source = BeautifulSoup(urlopen(url).read())
+    source = BeautifulSoup(urlopen(url).read().decode())
 
     # haetaan urlin takaa määritelmät listaan.
     maaritelmat = source.find("ol").find_all("p")
@@ -25,13 +27,13 @@ def maaritelmaSivulta(maarNro, url):
     # jos käyttäjän postaama määritelmänumero on määritelmien määrää suurempi,
     # niin maarNro = len(maaritelmat)
     maarNro = min(len(maaritelmat), maarNro)
-    maaritelma = str(maaritelmat[maarNro - 1].text.encode("utf8")).strip()
+    maaritelma = str(maaritelmat[maarNro - 1].text).strip()
     return [maaritelma, maarNro, len(maaritelmat)]
 
 
 def maaritelmaHaku(hakusanat):
     # hakutermi ascii(?) muotoon
-    hakutermi = quote(hakusanat.encode("utf8"))
+    hakutermi = quote(hakusanat)
 
     # katotaan onko käyttäjä antanu hakuun mukaan määritelmän numeroa ja jos ei
     # ole, niin tulostetaan ensimmäinen määritelmä.
@@ -43,21 +45,21 @@ def maaritelmaHaku(hakusanat):
         maarNro = int(args[-1])
         # poistetaan käyttäjän syöttämä numero hakutermeistä ja muutetaan
         # hakutermi ascii(?) muotoon
-        hakutermi = quote(" ".join(args[:-1]).encode("utf8"))
+        hakutermi = quote(" ".join(args[:-1]))
     except:
         pass
 
     hakuURL = "http://www.suomisanakirja.fi/ajax-search.php?query=" + hakutermi
 
     # haetaan suomisanakirjan autocompleten jsonin tiedot
-    resp = json.loads(urlopen(hakuURL).read())
+    resp = json.loads(urlopen(hakuURL).read().decode())
     # jos suggestionseja ei ole, niin palautetaan "None".
     if len(resp['suggestions']) == 0:
         return None
     # hakutermejä lähiten vastaava sana
-    sana = resp['suggestions'][0].encode("utf8")
+    sana = resp['suggestions'][0]
     # url josta määritelmä haetaan
-    url = "http://www.suomisanakirja.fi/" + sana
+    url = "http://www.suomisanakirja.fi/" + quote(sana)
     return (sana, maaritelmaSivulta(maarNro, url))
 
 

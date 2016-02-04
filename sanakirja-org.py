@@ -1,15 +1,17 @@
-# coding: utf8
 """
-sanakirja-org.py - Willie Sanakirja.org Module
-Copyright © 2014, Marcus Leivo
-Copyright © 2015, Marcus Leivo
+sanakirja-org.py - Sopel Sanakirja.org Module
+Copyright 2014, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
+Copyright 2015, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
 
-Licensed under the GNU Lesser General Public
-License Version 3 (or greater at your wish).
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
-from willie.module import commands, rate, example
+from sopel.module import commands, rate, example
+from sopel import web
 from bs4 import BeautifulSoup
-from urllib import quote, urlopen
+from urllib.parse import quote
+from urllib.request import urlopen
 import re
 
 maatunnus = {"bg": "1", "ee": "2", "en": "3", "es": "4",
@@ -20,12 +22,11 @@ maatunnus = {"bg": "1", "ee": "2", "en": "3", "es": "4",
              "hu": "21", "ru": "22", "nl": "23", "jp": "24"}
 
 
-@rate(10)
+@rate(5)
 @commands("sk", "sanakirja", u"käännä")
 @example(u".sk :ee :fi Krikin kaja pöhö")
 def sanakirja(bot, trigger):
-    """Maatunnukset: bg, cz, de, dk, ee, el, en, ep, es, fi, fr, hu, it, jp, \
-        lat, lt, lv, nl, no, pl, pt, ru, se, tr"""
+    """Maatunnukset: bg, cz, de, dk, ee, el, en, ep, es, fi, fr, hu, it, jp, lat, lt, lv, nl, no, pl, pt, ru, se, tr"""
     if not trigger.group(2):
         bot.say(u"Yritäs ny.")
         return
@@ -54,9 +55,9 @@ def sanakirja(bot, trigger):
         bot.say(u"Yritä edes")
         return
     url = "http://www.sanakirja.org/search.php?q=%s&l=%s&l2=%s \
-        &dont_switch_languages" % (quote(hakusana.encode("utf8")),
+        &dont_switch_languages" % (quote(hakusana),
                                    maatunnus[lahdekieli], maatunnus[kohdekieli])
-    soup = BeautifulSoup(urlopen(url).read())
+    soup = BeautifulSoup(web.get(url))
     output = ""
     # Valitsee vaan kaannokset eika mitaan genetiivei yms.
     pysaytys = 0
@@ -72,14 +73,14 @@ def sanakirja(bot, trigger):
             # ylimaaranen paska vittuun
             for kaannos in sk_row.find_all("a", attrs={"href":
                                                        re.compile("search")}):
-                if len(output + '"%s", ' % kaannos.text.encode("utf8")) < 335:
-                    output += '"%s", ' % kaannos.text.encode("utf8")
+                if len(output + '"%s", ' % kaannos.text) < 335:
+                    output += '"%s", ' % kaannos.text
                 else:
                     output += "....."
                     pysaytys = 1
     if output == "":
         for i in soup.find_all("p"):
-            if i.text.encode("utf8").find("Automatisoitujen") != -1:
+            if i.text.find("Automatisoitujen") != -1:
                 bot.say(
                     u"Kusipäähomo sanakirja blockaa :D pitää oottaa varmaa \
                     jotai 5min tyylii et toimii taas :D")
@@ -90,6 +91,6 @@ def sanakirja(bot, trigger):
         "%s (%s to %s)" %
         (output[
             :-
-            2].decode("utf8"),
+            2],
             lahdekieli,
             kohdekieli))

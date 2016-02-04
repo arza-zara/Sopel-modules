@@ -1,13 +1,14 @@
-# -*- coding: utf-8 -*-
 """
-siwa.py - Willie Siwa Module
-Copyright © 2015, Marcus Leivo
+siwa.py - Sopel Siwa Module
+Copyright 2015, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
 
-Licensed under the GNU Lesser General Public
-License Version 3 (or greater at your wish).
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
-from willie.module import commands
-from urllib import quote, urlopen
+from sopel.module import commands
+from urllib.parse import quote
+from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import datetime
 import json
@@ -156,13 +157,13 @@ def siwa_ja_valintatalo(bot, trigger, ketju):
     if kauppaid == "":
         args = trigger.group(2).replace(", ", ",").split(",")
         nro = 1
-        hakuUrl = "http://www.siwa.fi/__snippet/keyword/?chain=%s&text=%s" % (ketju, str(quote(args[0].encode('utf8'))))
+        hakuUrl = "http://www.siwa.fi/__snippet/keyword/?chain=%s&text=%s" % (ketju, str(quote(args[0])))
         try:
             nro = int(args[-1])
         except:
             pass
         try:
-            tulokset = json.loads(urlopen(hakuUrl).read())
+            tulokset = json.loads(urlopen(hakuUrl).read().decode())
             if nro > len(tulokset) or nro < 1:
                 nro = 1
             tunnisteID = str(tulokset[nro - 1]['id'])
@@ -178,7 +179,7 @@ def siwa_ja_valintatalo(bot, trigger, ketju):
 
     # Hakee kaupan soossit
     try:
-        soup = BeautifulSoup(urlopen(kauppasivu).read())
+        soup = BeautifulSoup(urlopen(kauppasivu).read().decode())
     except:
         return bot.say("Juuh eli kesko ddossaa, kokeile pääsex ite selaimel: " + kauppasivu)
 
@@ -197,7 +198,7 @@ def siwa_ja_valintatalo(bot, trigger, ketju):
     # jos ajat kusee eik oo 24/7 siwa niin kysees on avaamaton siwa
     except:
         try:
-            count = "; " + soup.find("p", attrs={"class": "launch_info"}).string.encode('utf8')
+            count = "; " + soup.find("p", attrs={"class": "launch_info"}).string
         except:
             return bot.say("Juuh eli joku kyl kusee nyt siwan sivuil.")
 
@@ -214,7 +215,7 @@ def siwa_ja_valintatalo(bot, trigger, ketju):
     output = output[:-2] + "; "
     for i in range(len(paivat)):
         output += "%s %s, " % (paivat[i].string, ajat[i].string)
-    bot.say(output[:-2].replace("  ", " ") + count.decode('utf8'))
+    bot.say(output[:-2].replace("  ", " ") + count)
 
 
 @commands('setsiwa')
@@ -224,8 +225,8 @@ def setsiwa(bot, trigger):
         bot.say("yritä edes")
         return
     # Sama hakujuttu ku tossa .siwa komennos
-    hakuUrl = "http://www.siwa.fi/__snippet/keyword/?chain=Siwa&text=" + str(quote(trigger.group(2).encode('utf8')))
-    tulokset = json.loads(urlopen(hakuUrl).read())
+    hakuUrl = "http://www.siwa.fi/__snippet/keyword/?chain=Siwa&text=" + str(quote(trigger.group(2)))
+    tulokset = json.loads(urlopen(hakuUrl).read().decode())
     if not tulokset:
         bot.say("Virhe haussa.")
         return
@@ -240,8 +241,8 @@ def setvalintatalo(bot, trigger):
         bot.say("yritä edes")
         return
     # Sama hakujuttu ku tossa .siwa komennos
-    hakuUrl = "http://www.siwa.fi/__snippet/keyword/?chain=Valintatalo&text=" + str(quote(trigger.group(2).encode('utf8')))
-    tulokset = json.loads(urlopen(hakuUrl).read())
+    hakuUrl = "http://www.siwa.fi/__snippet/keyword/?chain=Valintatalo&text=" + str(quote(trigger.group(2)))
+    tulokset = json.loads(urlopen(hakuUrl).read().decode())
     if not tulokset:
         bot.say("Virhe haussa.")
         return

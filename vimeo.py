@@ -1,17 +1,16 @@
-# coding: utf8
 """
-vimeo.py - Willie Vimeo Module
-Copyright © 2015, Marcus Leivo
+vimeo.py - Sopel Vimeo Module
+Copyright 2015, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
 
-Licensed under the GNU Lesser General Public
-License Version 3 (or greater at your wish).
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
-from __future__ import unicode_literals
 import json
 import re
 
-from willie import web
-from willie.module import commands, example, rule
+from sopel import web, tools
+from sopel.module import commands, example, rule
 
 
 regex = re.compile('.*(vimeo.com/)([0-9]+)')
@@ -19,7 +18,7 @@ regex = re.compile('.*(vimeo.com/)([0-9]+)')
 
 def setup(bot):
     if not bot.memory.contains('url_callbacks'):
-        bot.memory['url_callbacks'] = tools.WillieMemory()
+        bot.memory['url_callbacks'] = tools.SopelMemory()
     bot.memory['url_callbacks'][regex] = vimeo_by_url
 
 
@@ -34,18 +33,18 @@ def vimeo_by_url(bot, trigger, found_match=None):
         return
 
     output = u"[Vimeo] "
-    output += u"Title: %s" % (unicode(resp[0]['title']))
+    output += u"Title: %s" % (str(resp[0]['title']))
     if 'user_name' in resp[0]:
-        output += u" | Uploader: %s" % (unicode(resp[0]['user_name']))
+        output += u" | Uploader: %s" % (str(resp[0]['user_name']))
     if 'upload_date' in resp[0]:
-        output += u" | Uploaded: %s" % (unicode(resp[0]['upload_date']))
+        output += u" | Uploaded: %s" % (str(resp[0]['upload_date']))
     if 'duration' in resp[0]:
-        output += u" | Duration: %s" % (unicode(resp[0]['duration']))
+        output += u" | Duration: %s" % (str(resp[0]['duration']))
     if 'stats_number_of_plays' in resp[0]:
-        output += u" | Views : %s" % (unicode(resp[0]['stats_number_of_plays']))
+        output += u" | Views : %s" % (str(resp[0]['stats_number_of_plays']))
     if 'stats_number_of_comments' in resp[0]:
-        output += u" | Comments: %s" % (unicode(resp[0]['stats_number_of_comments']))
+        output += u" | Comments: %s" % (str(resp[0]['stats_number_of_comments']))
     if 'stats_number_of_likes' in resp[0]:
-        output += u" | Likes: %s" % (unicode(resp[0]['stats_number_of_likes']))
+        output += u" | Likes: %s" % (str(resp[0]['stats_number_of_likes']))
 
     bot.say(output)

@@ -1,9 +1,8 @@
-My willie modules
+My Sopel modules
 =================
 
-My willie IRC BOT modules. All modules are created by me and licensed under GNU
-LGPLv3, except ip.py and lastfm.py (see inside the files for more information).
-Note that some modules require "bs4" (BeautifulSoup 4).
+My Sopel IRC BOT modules. All modules are created by me (excluding ip-lookup.y) and license
+under Eiffel Forum License 2. Note that some modules require "bs4" (BeautifulSoup 4).
 
 almanakka.py
 ------------
@@ -52,10 +51,10 @@ A weather module for Finnish cities. Scrapes weather data from
 [ilmatieteenlaitos.fi](http://ilmatieteenlaitos.fi) and gives out accurate
 readings. **Requires BeautifulSoup4**
 
-ip.py
+ip-lookup.py
 -----
 This is a modified version of the original ip.py found
-[here](https://github.com/embolalia/willie). This version outputs:
+[here](https://github.com/embolalia/Sopel). This version outputs:
 * Hostname
 * **IP-address**
 * ISP
@@ -66,7 +65,7 @@ This is a modified version of the original ip.py found
 * **Time Zone**
 
 You can now also use the .ip command to check users' hostname information with
-.ip `<username>`, e.g. ".ip Meicceli"
+`.ip <username>`, e.g. `.ip Meicceli`
 
 kuha.py
 -------
@@ -75,26 +74,25 @@ Retrieves random stultifying phrases from [lannistajakuha.com](http://lannistaja
 
 lastfm.py
 ---------
-This is a modified version of the original lastfm.py found
-[here](https://github.com/mulcare/willie-modules). This version has an
-additional with which you can generate a link to view your
-[lastfm collage](http://tapmusic.net/lastfm/).
+Fetches now playing information from last.fm with `.np <username>`. Also includes `.col` and `.fmstatus`.
 
-Update: Now also includes a new command, '.fmstatus', which fetches last.fm's current status via [status.last.fm](http://status.last.fm/)
+omdb.py
+-------
+Fetches information when an imdb link is posted. Can also find movie information.
 
 oraakkeli.py
 ------------
-Answers questions with the command '.oraakkeli', or by calling your bot eg.
-"Willie, how are you?". Gets the answers from [lintukoto.net](http://www.lintukoto.net/viihde/oraakkeli/index.php).
+Answers questions with the command `.oraakkeli`, or by calling your bot eg.
+`Sopel, how are you?`. Gets the answers from [lintukoto.net](http://www.lintukoto.net/viihde/oraakkeli/index.php).
 
 s-ryhma.py
 ----------
-Find the opening hours of any Alepa, Prisma, Sale or S-market. Use '.sryhmä' to search any of the stores, or '.alepa' to search only Alepas.
+Find the opening hours of any Alepa, Prisma, Sale or S-market. Use `.sryhmä` to search any of the stores, or `.alepa` to only search for Alepas.
 
 sanakirja-org.py
 ----------------
 Translates words via [sanakirja.org](http://sanakirja.org/). Syntax is the same as it
-is with translate.py, so to translate from English to Swedish, type .sk :en :se valentine.
+is with translate.py, so to translate from English to Swedish, type `.sk :en :se valentine`.
 If no languages are given, translates from English to Finnish. Also, if only one language
 is given, the word is translated from the given language into Finnish.
 **Requires BeautifulSoup4**

@@ -1,17 +1,17 @@
-# coding: utf8
 """
-s-ryhma.py - Willie S-Ryhmä Module
-Copyright © 2015, Marcus Leivo
+s-ryhma.py - Sopel S-Ryhmä Module
+Copyright 2015, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
 
-Licensed under the GNU Lesser General Public
-License Version 3 (or greater at your wish).
+Licensed under the Eiffel Forum License 2.
+
+http://sopel.chat/
 """
 from __future__ import unicode_literals
 import json
 
-from willie import web
-from urllib import quote
-from willie.module import commands, example
+from sopel import web
+from urllib.parse import quote
+from sopel.module import commands, example
 
 import datetime
 
@@ -100,7 +100,7 @@ def sKauppaAuki(kauppa):
     return ", ".join(aukiolot)
 
 
-@commands('s-ryhma', u's-ryhmä', u'sryhmä', u'sryhma')
+@commands('s-ryhma', 'jutkus', u's-ryhmä', u'sryhmä', u'sryhma', u'smafia', u's-mafia')
 @example('.s-ryhma 00100')
 def sryhma(bot, trigger):
     sryhmaHaku(bot, trigger, trigger.group(2))
@@ -142,7 +142,7 @@ def sryhmaHaku(bot, trigger, hakuTermit):
             nro = int(args[1]) - 1
         except:
             pass
-        url = "https://karttapalvelu.s-kanava.net/map/serviceapi/search.html?output=json&maxresults=10&value=%s" % (quote(args[0].encode("utf8")))
+        url = "https://karttapalvelu.s-kanava.net/map/serviceapi/search.html?output=json&maxresults=10&value=%s" % (quote(args[0]))
     url += "&chain=" + ",".join(chainIDs)
     try:
         tulokset = json.loads(web.get(url))['pobs']
@@ -170,7 +170,7 @@ def setsryhma(bot, trigger):
     if not trigger.group(2):
         bot.say("yritä edes")
         return
-    hakuUrl = "https://karttapalvelu.s-kanava.net/map/serviceapi/search.html?output=json&maxresults=1&value=" + str(quote(trigger.group(2).encode('utf8')))
+    hakuUrl = "https://karttapalvelu.s-kanava.net/map/serviceapi/search.html?output=json&maxresults=1&value=" + str(quote(trigger.group(2)))
     hakuUrl += "&chain=" + ",".join(chainIDs)
     tulokset = ""
     try:
