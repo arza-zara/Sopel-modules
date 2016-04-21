@@ -30,7 +30,7 @@ def get_mlia():
 def mlia(bot, trigger):
 
     story = ""
-    while len(story) >= 400 and story != "":
+    while len(story) >= 400 or story != "":
         story = get_mlia()
         if not story:
             return bot.say("I'm dooooooooooown!")
