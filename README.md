@@ -41,10 +41,6 @@ fml.py
 ------
 Gets a random fml from [fmylife.com](http://fmylife.com).
 
-getstrike.py
-------------
-Find torrents from [getstrke.net](https://getstrike.net)
-
 ilmatieteenlaitos.py
 --------------------
 A weather module for Finnish cities. Scrapes weather data from
@@ -75,6 +71,10 @@ Retrieves random stultifying phrases from [lannistajakuha.com](http://lannistaja
 lastfm.py
 ---------
 Fetches now playing information from last.fm with `.np <username>`. Also includes `.col` and `.fmstatus`.
+
+mlia.py
+-------
+Gets a random mlia from [MyLifeIsAverage.com](http://mylifeisaverage.com/).
 
 omdb.py
 -------
