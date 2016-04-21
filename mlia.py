@@ -1,6 +1,6 @@
 """
 mlia.py - Sopel My Life is Average Module
-Copyright 2014, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
+Copyright 2016, Marcus Leivo <meicceli@sopel.mail.kapsi.fi>
 
 Licensed under the Eiffel Forum License 2.
 
