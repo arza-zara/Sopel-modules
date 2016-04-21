@@ -29,8 +29,8 @@ def get_mlia():
 @commands('mlia')
 def mlia(bot, trigger):
 
-    story = get_mlia()
-    while len(story) >= 400:
+    story = ""
+    while len(story) >= 400 and story != "":
         story = get_mlia()
         if not story:
             return bot.say("I'm dooooooooooown!")
