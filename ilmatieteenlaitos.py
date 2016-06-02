@@ -58,8 +58,10 @@ def fmiWindDir(degs):
         return "Etelätuulta"
     if 202.5 < degs <= 247.5:
         return "Lounaistuulta"
-    if 247.5 < degs <= 337.5:
+    if 247.5 < degs <= 292.5:
         return "Länsituulta"
+    if 292.5 < degs <= 337.5:
+        return "Luoteistuulta"
     return "Pohjoistuulta"
 
 
